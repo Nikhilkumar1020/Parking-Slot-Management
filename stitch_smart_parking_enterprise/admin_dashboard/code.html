@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ParkSystem - Live Monitoring Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0b1c30",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary": "#006c49",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#00714d",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface": "#f8f9ff",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "background": "#f8f9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-surface": "#213145",
+                        "on-surface-variant": "#434655",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-container": "#6cf8bb",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#bc4800",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container": "#e5eeff",
+                        "primary-container": "#2563eb",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface": "#0b1c30",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-dim": "#cbdbf5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #E2E8F0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="bg-surface sticky top-0 w-full border-b border-outline-variant shadow-sm flex items-center justify-between px-lg h-16 z-50">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">ParkSystem</h1>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative hidden md:flex items-center bg-surface-container-low rounded-lg px-md py-xs border border-outline-variant focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-body-md mr-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-64 p-0" placeholder="Search vehicles or users..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-sm rounded-full transition-colors">notifications</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Profile" data-alt="Close-up professional headshot of Alex Rivera, a facility manager with a friendly expression. He is wearing a clean navy polo shirt in a bright, modern office setting with soft, natural lighting. The image maintains a professional, corporate dashboard aesthetic with high clarity and balanced tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOSDW4fa3jWn6OOs3wY8xAA6A0Y8nEjBSiv2r4omvv6LnbgDQ7NYWcI2g_E23VjLd4dmuV-DBVVbLgh1AWjD5jaBtXQ68BAyhtEjDUzMvktL-nDO6QgKf5yLt-AASayBmSPlCyLconX-pDzCo-KyI0a9azgQzXQINgVuo7k2WJ88IWFUOOFm93vdIzr0Sp8K9QeDpiyPY_Rs-BMfO2xFagk4y28KNe-DHaNB9IWezugBaZD14heOaU7LCGslrovwdK7xMh5dsv0A"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex h-[calc(100vh-64px)] overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-16 h-full w-[280px] border-r border-outline-variant bg-surface-container-low flex flex-col py-md hidden lg:flex">
+<nav class="flex-1 space-y-1">
+<!-- Active Dashboard -->
+<div class="bg-primary-container text-on-primary-container rounded-lg mx-2 flex items-center px-md py-sm gap-md cursor-pointer transition-transform scale-95 active:scale-100">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">directions_car_filled</span>
+<span class="font-label-md text-label-md">Slot Management</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-label-md text-label-md">Vehicle Registry</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">group_add</span>
+<span class="font-label-md text-label-md">Visitor Access</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-md text-label-md">Reservations</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Live Map</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+<div class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-md py-sm gap-md cursor-pointer rounded-lg transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+<div class="px-lg py-md mt-auto">
+<div class="p-md rounded-xl bg-surface-container flex items-center gap-sm">
+<div class="h-10 w-10 bg-primary-fixed rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">support_agent</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Need Help?</p>
+<p class="text-[10px] text-on-surface-variant">System Status: Optimal</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-[280px] overflow-y-auto p-lg custom-scrollbar">
+<div class="max-w-[1440px] mx-auto space-y-lg">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Live Monitoring</h2>
+<p class="text-body-md text-on-surface-variant">Real-time overview of facility operations and security status.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary hover:bg-primary-container text-on-primary flex items-center gap-sm px-lg py-sm rounded-lg font-label-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">map</span>
+                            View Live Map
+                        </button>
+</div>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Total Capacity -->
+<div class="glass-card p-lg rounded-xl flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<p class="font-label-md text-on-surface-variant flex items-center gap-xs uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">domain</span> Total Capacity
+                            </p>
+<h3 class="font-display text-display text-primary mt-sm">2,500</h3>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10">
+<span class="material-symbols-outlined text-[100px]" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+</div>
+</div>
+<!-- Current Occupancy -->
+<div class="glass-card p-lg rounded-xl h-32 flex flex-col justify-between relative overflow-hidden border-l-4 border-l-secondary">
+<div class="z-10">
+<p class="font-label-md text-on-surface-variant flex items-center gap-xs uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px] text-secondary">analytics</span> Occupancy %
+                            </p>
+<div class="flex items-end gap-sm mt-sm">
+<h3 class="font-display text-display text-on-surface">68%</h3>
+<span class="text-secondary font-label-md mb-2 flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +2.4%
+                                </span>
+</div>
+</div>
+<!-- Micro Chart/Visualizer Placeholder -->
+<div class="absolute right-4 bottom-4 w-24 h-12 flex items-end gap-1">
+<div class="bg-secondary-container h-1/3 w-2 rounded-t-sm"></div>
+<div class="bg-secondary-container h-2/3 w-2 rounded-t-sm"></div>
+<div class="bg-secondary-container h-1/2 w-2 rounded-t-sm"></div>
+<div class="bg-secondary-container h-full w-2 rounded-t-sm"></div>
+</div>
+</div>
+<!-- Revenue Today -->
+<div class="glass-card p-lg rounded-xl h-32 flex flex-col justify-between relative overflow-hidden">
+<div class="z-10">
+<p class="font-label-md text-on-surface-variant flex items-center gap-xs uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px] text-tertiary">payments</span> Revenue Today
+                            </p>
+<h3 class="font-display text-display text-on-surface mt-sm">$12,480.00</h3>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10">
+<span class="material-symbols-outlined text-[100px]" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+</div>
+</div>
+</div>
+<!-- Main Grid: Approvals & Logs -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+<!-- Reservation Approval Queue -->
+<div class="lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="px-lg py-md border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md">Reservation Approval Queue</h3>
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-label-md text-[10px]">12 PENDING</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-lg py-md font-label-md text-on-surface-variant border-b border-outline-variant">VISITOR</th>
+<th class="px-lg py-md font-label-md text-on-surface-variant border-b border-outline-variant">VEHICLE ID</th>
+<th class="px-lg py-md font-label-md text-on-surface-variant border-b border-outline-variant">SLOT TYPE</th>
+<th class="px-lg py-md font-label-md text-on-surface-variant border-b border-outline-variant">ARRIVAL</th>
+<th class="px-lg py-md font-label-md text-on-surface-variant border-b border-outline-variant text-right">ACTIONS</th>
+</tr>
+</thead>
+<tbody>
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<div class="h-8 w-8 rounded-full bg-secondary-fixed-dim flex items-center justify-center font-bold text-on-secondary-fixed">MB</div>
+<div>
+<p class="font-body-md font-semibold">Marco Beltran</p>
+<p class="text-[10px] text-on-surface-variant">Standard Pass</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md border-b border-outline-variant font-body-md">CAL-4421</td>
+<td class="px-lg py-md border-b border-outline-variant">
+<span class="bg-surface-container px-sm py-xs rounded text-[10px] font-bold">EV CHARGE</span>
+</td>
+<td class="px-lg py-md border-b border-outline-variant font-body-md">10:45 AM</td>
+<td class="px-lg py-md border-b border-outline-variant text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="px-md py-xs rounded-lg border border-outline text-on-surface hover:bg-error hover:text-white hover:border-error transition-all font-label-md">Reject</button>
+<button class="px-md py-xs rounded-lg bg-primary text-on-primary hover:bg-primary-container transition-all font-label-md">Approve</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 (Zebra) -->
+<tr class="bg-[#F8FAFC] hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<div class="h-8 w-8 rounded-full bg-primary-fixed-dim flex items-center justify-center font-bold text-on-primary-fixed">SC</div>
+<div>
+<p class="font-body-md font-semibold">Sarah Chen</p>
+<p class="text-[10px] text-on-surface-variant">VIP Access</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md border-b border-outline-variant font-body-md">TXS-9910</td>
+<td class="px-lg py-md border-b border-outline-variant">
+<span class="bg-surface-container px-sm py-xs rounded text-[10px] font-bold">RESERVED</span>
+</td>
+<td class="px-lg py-md border-b border-outline-variant font-body-md">11:15 AM</td>
+<td class="px-lg py-md border-b border-outline-variant text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="px-md py-xs rounded-lg border border-outline text-on-surface hover:bg-error hover:text-white hover:border-error transition-all font-label-md">Reject</button>
+<button class="px-md py-xs rounded-lg bg-primary text-on-primary hover:bg-primary-container transition-all font-label-md">Approve</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<div class="h-8 w-8 rounded-full bg-tertiary-fixed-dim flex items-center justify-center font-bold text-on-tertiary-fixed">JM</div>
+<div>
+<p class="font-body-md font-semibold">James Miller</p>
+<p class="text-[10px] text-on-surface-variant">Contractor</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md border-b border-outline-variant font-body-md">WASH-112</td>
+<td class="px-lg py-md border-b border-outline-variant">
+<span class="bg-surface-container px-sm py-xs rounded text-[10px] font-bold">LOADING BAY</span>
+</td>
+<td class="px-lg py-md border-b border-outline-variant font-body-md">11:30 AM</td>
+<td class="px-lg py-md border-b border-outline-variant text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="px-md py-xs rounded-lg border border-outline text-on-surface hover:bg-error hover:text-white hover:border-error transition-all font-label-md">Reject</button>
+<button class="px-md py-xs rounded-lg bg-primary text-on-primary hover:bg-primary-container transition-all font-label-md">Approve</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<button class="w-full py-md text-primary font-label-md hover:bg-surface-container transition-colors">
+                            VIEW ALL PENDING REQUESTS
+                        </button>
+</div>
+<!-- Security Logs Feed -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<!-- Security Feed Card -->
+<div class="bg-on-background text-white rounded-xl overflow-hidden shadow-xl flex flex-col h-[500px]">
+<div class="p-lg border-b border-outline/20 flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
+</span>
+<h3 class="font-headline-md text-headline-md text-primary-fixed">Security Logs</h3>
+</div>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-white">more_vert</span>
+</div>
+<div class="flex-1 overflow-y-auto p-md space-y-md custom-scrollbar bg-on-background/50">
+<!-- Alert Item 1 -->
+<div class="p-md rounded-lg bg-white/5 border-l-4 border-error space-y-xs animate-pulse">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-error flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">warning</span> UNAUTHORIZED ENTRY
+                                        </span>
+<span class="text-[10px] text-outline">JUST NOW</span>
+</div>
+<p class="text-body-md">Gate 4: Sensor tripped without valid RFID scan.</p>
+<p class="text-[10px] text-primary-fixed-dim font-bold">CAMERA FEED 04 ACTIVE</p>
+</div>
+<!-- Alert Item 2 -->
+<div class="p-md rounded-lg bg-white/5 border-l-4 border-secondary space-y-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-secondary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> SYSTEM CHECK
+                                        </span>
+<span class="text-[10px] text-outline">12 MIN AGO</span>
+</div>
+<p class="text-body-md">Main Server heart-beat stable. Latency: 42ms.</p>
+</div>
+<!-- Alert Item 3 -->
+<div class="p-md rounded-lg bg-white/5 border-l-4 border-tertiary space-y-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-tertiary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">priority_high</span> ANOMALY DETECTED
+                                        </span>
+<span class="text-[10px] text-outline">28 MIN AGO</span>
+</div>
+<p class="text-body-md">Parking Slot B-12 occupied for &gt; 24 hours.</p>
+</div>
+<!-- Alert Item 4 -->
+<div class="p-md rounded-lg bg-white/5 border-l-4 border-outline space-y-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-outline flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">lock_open</span> STAFF ACCESS
+                                        </span>
+<span class="text-[10px] text-outline">45 MIN AGO</span>
+</div>
+<p class="text-body-md">Admin Area: Alex Rivera signed in.</p>
+</div>
+</div>
+<div class="p-md bg-white/5 border-t border-outline/20">
+<button class="w-full py-sm bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors font-label-md">
+                                    EXPORT SECURITY REPORT
+                                </button>
+</div>
+</div>
+<!-- System Health / Quick Stats -->
+<div class="glass-card p-lg rounded-xl space-y-md">
+<h4 class="font-label-md text-on-surface-variant border-b border-outline-variant pb-sm">DEVICE STATUS</h4>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<span class="text-body-md">Barrier Gates (8)</span>
+<span class="text-secondary font-bold text-[12px]">ONLINE</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5">
+<div class="bg-secondary h-1.5 rounded-full w-full"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-md">CCTV Array (32)</span>
+<span class="text-secondary font-bold text-[12px]">31/32 ACTIVE</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5">
+<div class="bg-secondary h-1.5 rounded-full w-[96%]"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-md">EV Stations (12)</span>
+<span class="text-tertiary font-bold text-[12px]">4 IN USE</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for Bottom Nav on Mobile -->
+<div class="h-20 lg:hidden"></div>
+</div>
+</main>
+</div>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 px-4 bg-surface border-t border-outline-variant shadow-lg lg:hidden">
+<div class="text-primary flex flex-col items-center gap-1 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</div>
+<div class="text-on-surface-variant flex flex-col items-center gap-1 transition-all duration-300 active:bg-surface-container">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Map</span>
+</div>
+<div class="text-on-surface-variant flex flex-col items-center gap-1 transition-all duration-300 active:bg-surface-container">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-md text-label-md">Book</span>
+</div>
+<div class="text-on-surface-variant flex flex-col items-center gap-1 transition-all duration-300 active:bg-surface-container">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</div>
+</nav>
+<!-- Contextual Floating Action Button -->
+<button class="fixed right-lg bottom-[80px] lg:bottom-lg bg-primary-container text-on-primary-container h-14 w-14 rounded-2xl shadow-xl flex items-center justify-center hover:scale-110 transition-transform active:scale-100 z-40 group">
+<span class="material-symbols-outlined text-[28px]">add</span>
+<!-- Tooltip on Hover -->
+<span class="absolute right-16 bg-on-background text-white px-md py-xs rounded text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Quick Reservation</span>
+</button>
+<script>
+        // Micro-interaction: Table Row hover effect enhancement
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(4px)';
+                row.style.transition = 'transform 0.2s ease-out';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Simple Search Filter Interaction (Mock)
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            console.log('Filtering Dashboard for:', e.target.value);
+            // Logic would go here to filter table rows or map markers
+        });
+    </script>
+
+<script src="../navigation.js"></script>
+</body></html>

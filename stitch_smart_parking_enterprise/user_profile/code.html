@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile | ParkSystem</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0b1c30",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary": "#006c49",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#00714d",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface": "#f8f9ff",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "background": "#f8f9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-surface": "#213145",
+                        "on-surface-variant": "#434655",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-container": "#6cf8bb",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#bc4800",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container": "#e5eeff",
+                        "primary-container": "#2563eb",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface": "#0b1c30",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-dim": "#cbdbf5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<!-- Desktop Navigation Drawer -->
+<aside class="hidden md:flex flex-col h-full py-md fixed left-0 top-0 h-full w-[280px] bg-surface-container-low border-r border-outline-variant z-40">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-md text-headline-md font-black text-primary">ParkSystem</h1>
+</div>
+<div class="px-md mb-lg">
+<div class="flex items-center gap-md p-sm rounded-lg">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="A professional headshot of a Hispanic male facility manager named Alex Rivera, wearing a smart casual polo shirt, looking approachable and confident. The background is a blurred, high-end corporate office with soft, bright daylight and a clean, blue-toned professional atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpQpTGiHHs3T6-85gvHcrRAv5S-XyaV0XGOiIKYE9m3s-K5q2O2wJvOky3DOgyQwc2qzpc_Q9BW8R_X4pahorYLk9uRe09vKVWkt1UAWycz8l-6fAkKatWLv3T5Yt_DTq272daJXwHxhk1rHh_sRMO0cTV6RYTxWlbDmHmkVoXss3Iozfsx5CYWsB0pBuLvVj2Ov1Br2RMGqnyWG-mN7NsC61On6kglmqK_Qc4WEd31VBfhQ_u9bWbOoCPYDsjYQQPLaJcdO6uWw"/>
+<div>
+<p class="font-headline-md text-[14px] font-bold">Alex Rivera</p>
+<p class="font-label-md text-on-surface-variant">Facility Manager</p>
+<span class="inline-block mt-xs px-2 py-0.5 bg-primary-fixed text-on-primary-fixed text-[10px] rounded uppercase font-bold tracking-wider">Admin</span>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="directions_car_filled">directions_car_filled</span>
+<span class="font-label-md">Slot Management</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-label-md">Vehicle Registry</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group_add">group_add</span>
+<span class="font-label-md">Visitor Access</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md">Reservations</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md">Live Map</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-md py-sm px-lg transition-transform scale-95 active:scale-100 bg-primary-container text-on-primary-container rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Top AppBar (Mobile/Tablet Only) -->
+<header class="md:hidden sticky top-0 w-full z-50 bg-surface border-b border-outline-variant shadow-sm flex items-center justify-between px-lg h-16">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary">ParkSystem</span>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="search">search</span>
+</header>
+<!-- Main Content -->
+<main class="md:ml-[280px] min-h-screen pb-32 md:pb-lg">
+<div class="max-w-[1440px] mx-auto p-md md:p-margin-desktop">
+<!-- Page Title -->
+<div class="mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Profile Settings</h2>
+<p class="font-body-md text-on-surface-variant">Manage your account preferences and security settings.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Profile Header Card (Asymmetric) -->
+<div class="lg:col-span-12 xl:col-span-8 bg-white rounded-xl border border-outline-variant shadow-sm p-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 p-lg opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="person">person</span>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-lg">
+<div class="relative">
+<img class="w-32 h-32 rounded-full object-cover border-4 border-primary-fixed" data-alt="A professional headshot of Alex Rivera, a Hispanic male facility manager with a friendly expression. He is set against a clean, modern corporate background with subtle blue and white tones. The lighting is soft and professional, capturing a high-end dashboard user aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk4HwosRjA7EgBuLIO_XI1xQwh5MMHs0LZJJVWFig88q6U7-LMC440-ZRpYLR9hV4mFrDMji_8uTwfQlSCpk3zbLXpfZNfgxcuYWKOP7W3AxC5nmv2dg5kMKO8B4uEv6eBgIzXFD80CwqAwJcV87KrTVPw41KAnw2MIRBvAq8CfHkELmE9yPMGJJ_rIsEiVj-yrrnHG_lK94uCQnABBvohcIpCg5YQeYNEo9FDlNSCRcmHHomMewFjSrWw5kQw3hRy8ABD3jlVqQ"/>
+<button class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-on-primary-fixed-variant transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="text-center md:text-left flex-1">
+<h3 class="font-headline-lg text-headline-lg mb-1">Alex Rivera</h3>
+<p class="font-body-lg text-on-surface-variant mb-4">Facility Manager • Downtown Plaza Wing A</p>
+<div class="flex flex-wrap justify-center md:justify-start gap-sm">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-label-md text-primary font-bold">ALEX.RIVERA@PARKSYSTEM.COM</span>
+<span class="bg-secondary-container px-3 py-1 rounded-full text-label-md text-on-secondary-fixed-variant font-bold">ID: #PS-8902</span>
+</div>
+</div>
+<div class="w-full md:w-auto">
+<button class="w-full bg-primary text-white px-lg py-md rounded-lg font-label-md flex items-center justify-center gap-sm hover:brightness-90 transition-all shadow-md">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                                Activity Log
+                            </button>
+</div>
+</div>
+</div>
+<!-- Form Section (Main) -->
+<div class="lg:col-span-8 space-y-lg">
+<!-- Edit Profile Form -->
+<section class="bg-white rounded-xl border border-outline-variant shadow-sm p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="badge">badge</span>
+<h3 class="font-headline-md text-headline-md">Personal Information</h3>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">First Name</label>
+<input class="border border-outline-variant rounded-lg p-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="Alex"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">Last Name</label>
+<input class="border border-outline-variant rounded-lg p-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="Rivera"/>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-md text-on-surface-variant">Email Address</label>
+<input class="border border-outline-variant rounded-lg p-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="email" value="alex.rivera@parksystem.com"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">Phone Number</label>
+<input class="border border-outline-variant rounded-lg p-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="tel" value="+1 (555) 123-4567"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">Department</label>
+<select class="border border-outline-variant rounded-lg p-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+<option>Facility Management</option>
+<option>Security Operations</option>
+<option>Administrative</option>
+</select>
+</div>
+<div class="md:col-span-2 pt-md border-t border-outline-variant flex justify-end gap-md">
+<button class="px-lg py-md rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-colors" type="button">Discard Changes</button>
+<button class="bg-primary text-white px-xl py-md rounded-lg font-label-md hover:brightness-95 transition-all" type="submit">Save Profile</button>
+</div>
+</form>
+</section>
+<!-- Security Section -->
+<section class="bg-white rounded-xl border border-outline-variant shadow-sm p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<h3 class="font-headline-md text-headline-md">Security &amp; Privacy</h3>
+</div>
+<div class="space-y-lg">
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-fixed rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="lock">lock</span>
+</div>
+<div>
+<p class="font-label-md">Password</p>
+<p class="text-[12px] text-on-surface-variant">Last changed 4 months ago</p>
+</div>
+</div>
+<button class="border border-primary text-primary px-lg py-sm rounded-lg font-label-md hover:bg-primary-fixed transition-colors">Change</button>
+</div>
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<p class="font-label-md">Two-Factor Authentication</p>
+<p class="text-[12px] text-on-surface-variant">Recommended for high security</p>
+</div>
+</div>
+<div class="relative inline-block w-12 h-6 transition duration-200 ease-in-out bg-outline rounded-full cursor-pointer" onclick="this.classList.toggle('bg-primary'); this.children[0].classList.toggle('translate-x-6')">
+<span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transform transition duration-200 ease-in-out"></span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Sidebar Content (Bento Style) -->
+<div class="lg:col-span-4 space-y-lg">
+<!-- Theme Selection Card -->
+<section class="bg-white rounded-xl border border-outline-variant shadow-sm p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
+<h3 class="font-headline-md text-headline-md">Appearance</h3>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<button class="flex flex-col items-center gap-sm p-md border-2 border-primary rounded-xl bg-primary-fixed-dim" onclick="document.documentElement.classList.remove('dark')">
+<span class="material-symbols-outlined text-[32px]" data-icon="light_mode">light_mode</span>
+<span class="font-label-md">Light Mode</span>
+</button>
+<button class="flex flex-col items-center gap-sm p-md border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors" onclick="document.documentElement.classList.add('dark')">
+<span class="material-symbols-outlined text-[32px]" data-icon="dark_mode">dark_mode</span>
+<span class="font-label-md">Dark Mode</span>
+</button>
+</div>
+</section>
+<!-- App Info & Support -->
+<section class="bg-surface-container-high rounded-xl p-lg space-y-lg">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<h3 class="font-headline-md text-headline-md">App Information</h3>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center text-[13px]">
+<span class="text-on-surface-variant">Version</span>
+<span class="font-bold">v3.4.12-pro</span>
+</div>
+<div class="flex justify-between items-center text-[13px]">
+<span class="text-on-surface-variant">Build Date</span>
+<span class="font-bold">Oct 14, 2023</span>
+</div>
+<div class="flex justify-between items-center text-[13px]">
+<span class="text-on-surface-variant">Instance</span>
+<span class="font-bold">Cloud Cluster A-1</span>
+</div>
+</div>
+<div class="pt-md border-t border-outline-variant space-y-sm">
+<a class="flex items-center justify-between text-primary font-label-md hover:underline" href="#">
+                                Help Center
+                                <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</a>
+<a class="flex items-center justify-between text-primary font-label-md hover:underline" href="#">
+                                Terms of Service
+                                <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</a>
+<a class="flex items-center justify-between text-primary font-label-md hover:underline" href="#">
+                                Contact Enterprise Support
+                                <span class="material-symbols-outlined text-sm" data-icon="support_agent">support_agent</span>
+</a>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="border-2 border-error-container rounded-xl p-lg">
+<h3 class="text-error font-headline-md mb-sm">Danger Zone</h3>
+<p class="text-[12px] text-on-surface-variant mb-lg">Permanently delete your local operator data or deactivate your account.</p>
+<button class="w-full border border-error text-error px-lg py-md rounded-lg font-label-md hover:bg-error-container transition-colors">
+                            Request Account Deactivation
+                        </button>
+</section>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 px-4 bg-surface border-t border-outline-variant shadow-lg lg:hidden">
+<a class="text-on-surface-variant flex flex-col items-center gap-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md">Home</span>
+</a>
+<a class="text-on-surface-variant flex flex-col items-center gap-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md">Map</span>
+</a>
+<a class="text-on-surface-variant flex flex-col items-center gap-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-md">Book</span>
+</a>
+<a class="text-primary flex flex-col items-center gap-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md font-bold">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for theme switching animation
+        const themeToggles = document.querySelectorAll('[onclick*="classList"]');
+        themeToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                document.body.classList.add('transition-colors', 'duration-500');
+            });
+        });
+    </script>
+
+<script src="../navigation.js"></script>
+</body></html>

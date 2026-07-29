@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Parking - Employee Dashboard</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#0b1c30",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary": "#006c49",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-primary-fixed": "#00174b",
+                    "surface-tint": "#0053db",
+                    "on-secondary-container": "#00714d",
+                    "surface-container-lowest": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-high": "#dce9ff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface": "#f8f9ff",
+                    "outline": "#737686",
+                    "on-primary-container": "#eeefff",
+                    "background": "#f8f9ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "inverse-surface": "#213145",
+                    "on-surface-variant": "#434655",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#d3e4fe",
+                    "secondary-container": "#6cf8bb",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#bc4800",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "primary": "#004ac6",
+                    "secondary-fixed": "#6ffbbe",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-container": "#e5eeff",
+                    "primary-container": "#2563eb",
+                    "surface-container-low": "#eff4ff",
+                    "on-surface": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "tertiary": "#943700",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-dim": "#cbdbf5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "margin-desktop": "40px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "unit": "4px",
+                    "gutter": "20px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #0b1c30;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .sidebar-active {
+            background-color: #2563eb;
+            color: #eeefff;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen">
+<!-- Sidebar (Desktop Only) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-full w-[280px] bg-surface-container-low border-r border-outline-variant flex-col py-md z-40">
+<div class="px-lg mb-xl">
+<span class="font-headline-md text-headline-md font-black text-primary">ParkSystem</span>
+</div>
+<div class="flex-1 space-y-1">
+<a class="bg-primary-container text-on-primary-container rounded-lg mx-2 flex items-center px-lg py-md transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined mr-sm">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-lg py-md transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined mr-sm">directions_car_filled</span>
+<span class="font-label-md text-label-md">Slot Management</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-lg py-md transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined mr-sm">badge</span>
+<span class="font-label-md text-label-md">Vehicle Registry</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-lg py-md transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined mr-sm">calendar_month</span>
+<span class="font-label-md text-label-md">Reservations</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-lg py-md transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined mr-sm">query_stats</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high mx-2 flex items-center px-lg py-md transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined mr-sm">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<div class="px-lg pt-md mt-auto border-t border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of Alex Rivera, a facility manager in his late 30s, smiling warmly. He is wearing a crisp white business shirt in a bright, modern corporate office setting with soft, high-key lighting. The style is clean, sharp, and corporate, using a palette of soft blues and whites to match a premium dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5s237OsjRcz2KJ8DwcefQKikTv-tQU_ZPOc-tR2vRbjyDqDJ1hq7jPYgY09s0tb0cS3jGTctPNDhd3QSKH1JO4yFK8_1tGpnbSP4MfXgkJtXwdhnU8bMGba8sPHU1FHullufgXNNXDHxTC4-XLHvO3tqaGwKKfPikBqrWZ3kYy2NShVzaqEYGJOchk1_mqHFO505tdPrK8oNpYuBR5ZA1osrWCPg3lzVMo7PipwopFGcD1pYG81LlZLxJyAYTXnmYXRzW9YHWBg"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant">Facility Manager</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Top App Bar -->
+<header class="sticky top-0 w-full z-50 bg-surface shadow-sm border-b border-outline-variant h-16 flex items-center justify-between px-lg md:pl-[300px]">
+<div class="flex items-center gap-md">
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">My Dashboard</h1>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative cursor-pointer group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<button class="md:hidden w-8 h-8 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A small circular profile avatar for a mobile app header. The image shows a friendly professional man with a clean-cut look, set against a blurred light-blue background that feels modern and corporate. The lighting is soft and even, highlighting a high-end UI feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk_JUZNgVdj-PiqzTozkzXc0iPQQVYef1v8qMZSGFFBka_FFgASKv0PErha42v00-Hp4aZFg2ek0lc6gP9CcpTYgSTefEBUyhVNru7uRReAKAS-QgGQ-_-6b0AxSt6Q6yNvASV2uWY_GcNZNDG_n1LgkWzPjCR-l3ssyDBRNl_lwSrxuz050TsXVXRQ-Ytu4eTH2cyusxLL1zWj77xIQlSNgw4tMdIzDp_o0VtF4UMeZfmUFjhI5nUnV2TtouCqFH5xpvUzVRFFA"/>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="md:pl-[280px] pb-24 md:pb-lg p-lg max-w-[1440px] mx-auto">
+<!-- Welcome Section -->
+<section class="mb-xl flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-xs">Overview</p>
+<h2 class="font-display text-display text-on-background">Welcome back, Alex.</h2>
+</div>
+<button class="flex items-center justify-center gap-sm bg-primary text-on-primary px-xl py-md rounded-xl font-body-lg text-body-lg shadow-sm hover:bg-on-primary-fixed-variant transition-colors group">
+<span class="material-symbols-outlined">add_circle</span>
+                Book Slot
+            </button>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Active Reservation (Priority Card) -->
+<div class="lg:col-span-8 glass-card rounded-xl p-lg shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+<div class="flex flex-col md:flex-row gap-lg justify-between items-start md:items-center">
+<div class="space-y-4">
+<div class="flex items-center gap-md">
+<span class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-lg font-label-md text-label-md">Active Now</span>
+<span class="text-on-surface-variant font-label-md text-label-md">Booking ID: #PK-2941</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-background mb-xs">A-42 — Tower East</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Floor 04 • Premium Parking Zone</p>
+</div>
+<div class="flex items-center gap-xl mt-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant mb-1">Time Remaining</span>
+<span class="font-display text-display text-primary" id="countdown">04:12:45</span>
+</div>
+</div>
+</div>
+<div class="bg-white p-md rounded-xl border border-outline-variant shadow-sm flex flex-col items-center gap-sm">
+<div class="w-32 h-32 bg-surface-container flex items-center justify-center rounded-lg">
+<!-- Placeholder for QR -->
+<span class="material-symbols-outlined text-[64px] text-on-surface-variant opacity-20">qr_code_2</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Scan at entrance</p>
+</div>
+</div>
+</div>
+<!-- Vehicle Details -->
+<div class="lg:col-span-4 glass-card rounded-xl p-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-background">Default Vehicle</h3>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-surface-container rounded-full p-1">edit</span>
+</div>
+<div class="flex items-center gap-md mb-xl">
+<div class="w-14 h-14 bg-primary-fixed rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">directions_car</span>
+</div>
+<div>
+<p class="font-headline-lg text-headline-lg text-on-background font-bold">ABC-1234</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Tesla Model 3 • Midnight Blue</p>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/30">
+<div class="flex items-center gap-sm text-secondary">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+<span class="font-label-md text-label-md">Verified for Level A Clearance</span>
+</div>
+</div>
+</div>
+<!-- Parking History -->
+<div class="lg:col-span-12 glass-card rounded-xl p-lg shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-background">Parking History</h3>
+<a class="text-primary font-label-md text-label-md hover:underline" href="#">View All Sessions</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="py-md px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="py-md px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Slot</th>
+<th class="py-md px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Duration</th>
+<th class="py-md px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Location</th>
+<th class="py-md px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-md px-md font-body-md text-body-md">Oct 24, 2023</td>
+<td class="py-md px-md font-body-md text-body-md font-semibold">B-12</td>
+<td class="py-md px-md font-body-md text-body-md">08h 12m</td>
+<td class="py-md px-md font-body-md text-body-md text-on-surface-variant">North Plaza • L3</td>
+<td class="py-md px-md text-right">
+<span class="inline-flex items-center rounded-full bg-[#EBF8FF] px-2.5 py-0.5 text-xs font-medium text-[#2B6CB0]">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-md px-md font-body-md text-body-md">Oct 22, 2023</td>
+<td class="py-md px-md font-body-md text-body-md font-semibold">C-08</td>
+<td class="py-md px-md font-body-md text-body-md">04h 45m</td>
+<td class="py-md px-md font-body-md text-body-md text-on-surface-variant">Annex Wing • L1</td>
+<td class="py-md px-md text-right">
+<span class="inline-flex items-center rounded-full bg-[#EBF8FF] px-2.5 py-0.5 text-xs font-medium text-[#2B6CB0]">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-md px-md font-body-md text-body-md">Oct 20, 2023</td>
+<td class="py-md px-md font-body-md text-body-md font-semibold">A-21</td>
+<td class="py-md px-md font-body-md text-body-md">09h 00m</td>
+<td class="py-md px-md font-body-md text-body-md text-on-surface-variant">Tower East • L2</td>
+<td class="py-md px-md text-right">
+<span class="inline-flex items-center rounded-full bg-[#EBF8FF] px-2.5 py-0.5 text-xs font-medium text-[#2B6CB0]">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 px-4 bg-surface border-t border-outline-variant lg:hidden shadow-lg">
+<a class="text-primary flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="text-on-surface-variant flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Map</span>
+</a>
+<a class="text-on-surface-variant flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-md text-label-md">Book</span>
+</a>
+<a class="text-on-surface-variant flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple countdown timer simulation
+        let hours = 4;
+        let minutes = 12;
+        let seconds = 45;
+
+        const countdownEl = document.getElementById('countdown');
+
+        function updateTimer() {
+            seconds--;
+            if (seconds < 0) {
+                seconds = 59;
+                minutes--;
+                if (minutes < 0) {
+                    minutes = 59;
+                    hours--;
+                }
+            }
+            
+            const h = hours < 10 ? '0' + hours : hours;
+            const m = minutes < 10 ? '0' + minutes : minutes;
+            const s = seconds < 10 ? '0' + seconds : seconds;
+            
+            if(countdownEl) {
+                countdownEl.innerText = `${h}:${m}:${s}`;
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+
+        // Sidebar link active state logic
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                navLinks.forEach(l => {
+                    l.classList.remove('bg-primary-container', 'text-on-primary-container');
+                    l.classList.add('text-on-surface-variant');
+                });
+                link.classList.add('bg-primary-container', 'text-on-primary-container');
+                link.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+
+<script src="../navigation.js"></script>
+</body></html>

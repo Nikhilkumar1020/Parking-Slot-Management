@@ -1,0 +1,12 @@
+{
+  "name": "stitch-smart-parking-enterprise",
+  "version": "1.0.0",
+  "description": "Smart Parking Enterprise UI Screens",
+  "main": "index.js",
+  "scripts": {
+    "start": "serve ."
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}

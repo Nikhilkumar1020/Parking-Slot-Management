@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reservation Module - ParkSystem</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#0b1c30",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary": "#006c49",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-primary-fixed": "#00174b",
+                    "surface-tint": "#0053db",
+                    "on-secondary-container": "#00714d",
+                    "surface-container-lowest": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-high": "#dce9ff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface": "#f8f9ff",
+                    "outline": "#737686",
+                    "on-primary-container": "#eeefff",
+                    "background": "#f8f9ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "inverse-surface": "#213145",
+                    "on-surface-variant": "#434655",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#d3e4fe",
+                    "secondary-container": "#6cf8bb",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#bc4800",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "primary": "#004ac6",
+                    "secondary-fixed": "#6ffbbe",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-container": "#e5eeff",
+                    "primary-container": "#2563eb",
+                    "surface-container-low": "#eff4ff",
+                    "on-surface": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "tertiary": "#943700",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-dim": "#cbdbf5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "margin-desktop": "40px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "unit": "4px",
+                    "gutter": "20px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background sticky top-0 w-full border-b border-outline-variant dark:border-outline shadow-sm flex items-center justify-between px-lg h-16 w-full z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">ParkSystem</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">search</span>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">AR</div>
+</div>
+</header>
+<div class="flex">
+<!-- NavigationDrawer (Desktop Only) -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-64px)] w-[280px] bg-surface-container-low dark:bg-on-background border-r border-outline-variant dark:border-outline py-md sticky top-16">
+<div class="px-md mb-lg">
+<div class="flex items-center gap-md p-sm rounded-xl">
+<div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a Hispanic male facility manager named Alex Rivera, wearing a business-casual blazer. The lighting is soft and flattering, typical of a high-end corporate dashboard profile. The background is a blurred modern office environment with hints of primary blue and clean white surfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjYVlqa0EAySziQIHFUVFgsSA2RVibpYPsW6_ugD1-Ui1eV4FoilLDw0E6qp-tEaqIoQr6rNzQ9pQzhKQ-R9ofVjoqkwyRI5AXag7TKhXxfDYCxP5ePNx57dv3Yl9bfbKuneEP1c25w3btEdBnWWSxuRO6FL8ialtXh2hLp5HE1N6Sku_b2Sr9Ssyt2v1zJd51HNlv5I9WzFsoQQZe1MFdT8dDDQv8eU5KKSBflTU3SgzGRyhy1C603keHT4WuM20oXkregaVn4Q"/>
+</div>
+<div>
+<p class="font-label-md text-label-md font-black text-primary">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant">Facility Manager • Admin</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 bg-primary-container text-on-primary-container dark:bg-primary-fixed-variant dark:text-on-primary-fixed-variant rounded-lg mx-2 shadow-sm" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-md text-label-md">Reservations</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">directions_car_filled</span>
+<span class="font-label-md text-label-md">Slot Management</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-label-md text-label-md">Vehicle Registry</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Live Map</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-md lg:p-margin-desktop overflow-x-hidden max-w-[1440px] mx-auto pb-24">
+<div class="flex flex-col lg:flex-row gap-lg">
+<!-- Left Column: Reservation Form & Calendar -->
+<div class="flex-1 space-y-lg">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Reservation Module</h2>
+<div class="flex items-center gap-2 bg-surface-container p-1 rounded-full border border-outline-variant">
+<button class="px-4 py-1.5 rounded-full text-label-md bg-white shadow-sm text-primary" id="toggleSingle">New Booking</button>
+<button class="px-4 py-1.5 rounded-full text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors" id="toggleBulk">Bulk Reserve</button>
+</div>
+</div>
+<!-- Reservation Panel -->
+<div class="bg-white rounded-xl border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="flex items-center gap-md">
+<div class="bg-primary-container p-2 rounded-lg text-on-primary-container">
+<span class="material-symbols-outlined">event_note</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md">Reserve a Slot</h3>
+<p class="text-on-surface-variant font-body-md">Configure your parking requirements below.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+<span class="ms-3 font-label-md text-label-md text-on-surface-variant">Future Reservation</span>
+</label>
+</div>
+<div class="p-lg grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Building Select -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface">Building Location</label>
+<div class="relative">
+<select class="w-full h-12 bg-surface border border-outline-variant rounded-lg px-md appearance-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+<option>North Plaza Main</option>
+<option>East Wing Terminal</option>
+<option>Underground Annex</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Floor Select -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface">Floor / Zone</label>
+<div class="relative">
+<select class="w-full h-12 bg-surface border border-outline-variant rounded-lg px-md appearance-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+<option>Level B1 (Premium)</option>
+<option>Level B2 (Standard)</option>
+<option>Level B3 (Long Term)</option>
+<option>Rooftop Terrace</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Calendar Integration -->
+<div class="md:col-span-2 space-y-sm">
+<label class="font-label-md text-label-md text-on-surface">Select Reservation Date</label>
+<div class="border border-outline-variant rounded-xl p-md bg-surface-container-low">
+<div class="flex items-center justify-between mb-md">
+<span class="font-headline-md text-headline-md text-primary">October 2023</span>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="calendar-grid gap-1">
+<div class="text-center font-label-md text-on-surface-variant py-2">S</div>
+<div class="text-center font-label-md text-on-surface-variant py-2">M</div>
+<div class="text-center font-label-md text-on-surface-variant py-2">T</div>
+<div class="text-center font-label-md text-on-surface-variant py-2">W</div>
+<div class="text-center font-label-md text-on-surface-variant py-2">T</div>
+<div class="text-center font-label-md text-on-surface-variant py-2">F</div>
+<div class="text-center font-label-md text-on-surface-variant py-2">S</div>
+<!-- Mock Days -->
+<div class="h-10 flex items-center justify-center text-outline-variant font-body-md">28</div>
+<div class="h-10 flex items-center justify-center text-outline-variant font-body-md">29</div>
+<div class="h-10 flex items-center justify-center text-outline-variant font-body-md">30</div>
+<div class="h-10 flex items-center justify-center bg-white rounded-lg border border-outline-variant shadow-sm text-on-surface font-bold">1</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">2</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">3</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">4</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">5</div>
+<div class="h-10 flex items-center justify-center bg-primary text-white font-bold rounded-lg shadow-md ring-2 ring-primary-container">6</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">7</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">8</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">9</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">10</div>
+<div class="h-10 flex items-center justify-center hover:bg-primary-container/20 cursor-pointer rounded-lg transition-colors">11</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-lg bg-surface-container-low border-t border-outline-variant flex justify-end">
+<button class="bg-primary text-white px-xl py-3 rounded-lg font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors shadow-sm flex items-center gap-2" onclick="document.getElementById('success-dialog').classList.remove('hidden')">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                Confirm Reservation
+                            </button>
+</div>
+</div>
+</div>
+<!-- Right Column: Current Bookings -->
+<div class="lg:w-[400px] space-y-lg">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Current Bookings</h2>
+<button class="text-primary font-label-md text-label-md hover:underline">View All</button>
+</div>
+<div class="space-y-md">
+<!-- Booking Item 1 -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow group">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-sm">
+<div class="bg-secondary-container/20 text-secondary p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[20px]">electric_car</span>
+</div>
+<div>
+<p class="font-headline-md text-[16px] leading-tight text-on-surface">Slot A-204</p>
+<p class="text-[12px] text-on-surface-variant">North Plaza • Level B1</p>
+</div>
+</div>
+<span class="bg-secondary-container text-on-secondary-fixed-variant px-2 py-1 rounded-full text-[10px] font-bold">ACTIVE</span>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant font-body-md text-sm mb-lg">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Oct 12, 2023</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>09:00 - 18:00</span>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">Modify</button>
+<button class="flex-1 py-2 bg-error/10 text-error rounded-lg font-label-md text-label-md hover:bg-error/20 transition-colors">Cancel</button>
+</div>
+</div>
+<!-- Booking Item 2 -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow group">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-sm">
+<div class="bg-primary-container/10 text-primary p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[20px]">local_parking</span>
+</div>
+<div>
+<p class="font-headline-md text-[16px] leading-tight text-on-surface">Slot C-12</p>
+<p class="text-[12px] text-on-surface-variant">East Wing • Level B2</p>
+</div>
+</div>
+<span class="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded-full text-[10px] font-bold uppercase">Reserved</span>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant font-body-md text-sm mb-lg">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Oct 15, 2023</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>All Day</span>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">Modify</button>
+<button class="flex-1 py-2 bg-error/10 text-error rounded-lg font-label-md text-label-md hover:bg-error/20 transition-colors">Cancel</button>
+</div>
+</div>
+<!-- Status Summary Card -->
+<div class="bg-primary text-white p-lg rounded-xl shadow-lg relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+</div>
+<h4 class="font-label-md text-label-md mb-2 opacity-80 uppercase tracking-widest">Occupancy Load</h4>
+<div class="flex items-end justify-between">
+<p class="text-[32px] font-black leading-none">84%</p>
+<div class="text-right">
+<p class="font-label-md text-label-md">12 Slots Remaining</p>
+<p class="text-[10px] opacity-70">Zone: North Plaza</p>
+</div>
+</div>
+<div class="mt-4 h-1.5 bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[84%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 px-4 bg-surface dark:bg-on-background border-t border-outline-variant dark:border-outline shadow-lg lg:hidden">
+<div class="text-on-surface-variant dark:text-surface-variant flex flex-col items-center gap-1 transition-all duration-300">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</div>
+<div class="text-on-surface-variant dark:text-surface-variant flex flex-col items-center gap-1 transition-all duration-300">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Map</span>
+</div>
+<div class="text-primary dark:text-primary-fixed flex flex-col items-center gap-1 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-md text-label-md">Book</span>
+</div>
+<div class="text-on-surface-variant dark:text-surface-variant flex flex-col items-center gap-1 transition-all duration-300">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</div>
+</nav>
+<!-- Success Confirmation Dialog (Hidden by Default) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center px-md hidden" id="success-dialog">
+<div class="absolute inset-0 bg-on-background/40 backdrop-blur-sm transition-opacity" onclick="this.parentElement.classList.add('hidden')"></div>
+<div class="bg-white rounded-2xl shadow-2xl max-w-md w-full relative z-10 overflow-hidden transform scale-100 transition-transform">
+<div class="p-xl text-center space-y-md">
+<div class="w-20 h-20 bg-secondary-container text-secondary rounded-full flex items-center justify-center mx-auto mb-lg">
+<span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Reservation Confirmed!</h3>
+<p class="text-on-surface-variant font-body-lg">Slot A-204 has been successfully reserved for October 6th. A confirmation email and digital pass have been sent to your registered device.</p>
+<div class="bg-surface-container p-md rounded-xl text-left border border-outline-variant mt-lg">
+<div class="flex justify-between mb-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase">Booking ID</span>
+<span class="text-xs font-bold text-primary">#PRK-99238-X</span>
+</div>
+<div class="flex justify-between">
+<span class="text-xs font-bold text-on-surface-variant uppercase">Vehicle</span>
+<span class="text-xs font-bold text-on-surface">TSLA-MD3-2023</span>
+</div>
+</div>
+<div class="pt-lg">
+<button class="w-full bg-primary text-white py-3 rounded-lg font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors" onclick="document.getElementById('success-dialog').classList.add('hidden')">Done</button>
+<button class="w-full mt-2 text-primary py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">Download Receipt</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // Simple Interaction Logic
+        const toggleSingle = document.getElementById('toggleSingle');
+        const toggleBulk = document.getElementById('toggleBulk');
+
+        toggleBulk.addEventListener('click', () => {
+            toggleBulk.classList.add('bg-white', 'shadow-sm', 'text-primary');
+            toggleBulk.classList.remove('text-on-surface-variant');
+            toggleSingle.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+            toggleSingle.classList.add('text-on-surface-variant');
+        });
+
+        toggleSingle.addEventListener('click', () => {
+            toggleSingle.classList.add('bg-white', 'shadow-sm', 'text-primary');
+            toggleSingle.classList.remove('text-on-surface-variant');
+            toggleBulk.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+            toggleBulk.classList.add('text-on-surface-variant');
+        });
+    </script>
+
+<script src="../navigation.js"></script>
+</body></html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ParkSystem - Slot Management</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0b1c30",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary": "#006c49",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#00714d",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface": "#f8f9ff",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "background": "#f8f9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-surface": "#213145",
+                        "on-surface-variant": "#434655",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-container": "#6cf8bb",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#bc4800",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container": "#e5eeff",
+                        "primary-container": "#2563eb",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface": "#0b1c30",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-dim": "#cbdbf5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .slot-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slot-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background-color: rgba(248, 249, 255, 0.8);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full bg-surface dark:bg-on-background flex items-center justify-between px-lg h-16 w-full z-50 border-b border-outline-variant dark:border-outline shadow-sm glass-header">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed cursor-pointer">menu</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">ParkSystem</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a facility manager in a clean, modern corporate office environment with soft natural lighting and a neutral blurred background, highlighting reliability and professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWgVIlpw-iZ0XLOjQ5Hhvipr3cphDfjbr6_Z5-tO3wWTbPASlZKLU1gJa_w-D0i3yH6A5gVk90aZ_-HtqGI0hJkGQLh_VmXSVuiYmAdxxvxPdFjyh6IeFE5Gb9QUOLOVmPpXeCrkaKp7_KmpYJJduc7cbUxUNzopdF5uRgHusnrz2ujNhz9rcWmRtxftG03y5560y8TF_IB3yNwL0OZG2mLG5UOrEiyWVSgxKVXG-9l3StAXaXkHpANDm7HjhwgbUUVmyMYeRZGQ"/>
+</div>
+</div>
+</header>
+<div class="flex">
+<!-- NavigationDrawer (Desktop Only) -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-64px)] w-[280px] sticky top-16 bg-surface-container-low border-r border-outline-variant py-md">
+<div class="px-md mb-xl flex flex-col gap-1">
+<span class="font-label-md text-label-md text-primary font-black uppercase tracking-widest">Alex Rivera</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Facility Manager</span>
+</div>
+<nav class="flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-transform scale-95 active:scale-100 shadow-sm" href="#">
+<span class="material-symbols-outlined">directions_car_filled</span>
+<span class="font-label-md text-label-md">Slot Management</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-label-md text-label-md">Vehicle Registry</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">group_add</span>
+<span class="font-label-md text-label-md">Visitor Access</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-md text-label-md">Reservations</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Live Map</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high mx-2 transition-transform scale-95 active:scale-100 rounded-lg mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 p-md md:p-xl mb-20 md:mb-0">
+<!-- Breadcrumbs & Actions -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Slot Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time control over facility capacity and allocation.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-sm px-lg py-2 border border-outline-variant text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+                        Bulk Import
+                    </button>
+<button class="flex items-center gap-sm px-lg py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:brightness-90 transition-all shadow-md">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Create New Slot
+                    </button>
+</div>
+</div>
+<!-- Filters Bar -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md mb-lg flex flex-wrap items-center gap-md">
+<div class="flex-1 min-w-[200px]">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md" placeholder="Search by Slot ID or Section..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm overflow-x-auto pb-1 md:pb-0">
+<button class="px-md py-1.5 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-label-md font-label-md border border-primary-fixed">All Slots</button>
+<button class="px-md py-1.5 bg-surface text-on-surface-variant rounded-full text-label-md font-label-md border border-outline-variant hover:bg-surface-container-high">Available</button>
+<button class="px-md py-1.5 bg-surface text-on-surface-variant rounded-full text-label-md font-label-md border border-outline-variant hover:bg-surface-container-high">Occupied</button>
+<button class="px-md py-1.5 bg-surface text-on-surface-variant rounded-full text-label-md font-label-md border border-outline-variant hover:bg-surface-container-high">Maintenance</button>
+</div>
+<div class="h-6 w-px bg-outline-variant hidden md:block"></div>
+<button class="flex items-center gap-sm px-md py-1.5 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span class="font-label-md text-label-md">Advanced Filters</span>
+</button>
+</div>
+<!-- Slots Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
+<!-- Slot Card: Available VIP -->
+<div class="slot-card bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">stars</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight">A-102</h4>
+<span class="font-label-md text-label-md text-on-surface-variant">Level 1 • VIP</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#D1FAE5] text-[#065F46] font-label-md text-[10px] uppercase tracking-wider">Available</span>
+</div>
+<div class="flex flex-col gap-xs py-sm border-y border-outline-variant/30">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Occupancy</span>
+<span class="font-semibold text-secondary">0%</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Last Event</span>
+<span class="text-on-surface">2h ago</span>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-auto">
+<button class="flex-1 py-2 text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-lg border border-transparent hover:border-primary-fixed transition-all">Edit</button>
+<button class="flex-1 py-2 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container rounded-lg transition-all">Block</button>
+</div>
+</div>
+<!-- Slot Card: Occupied EV -->
+<div class="slot-card bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">ev_station</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight">E-044</h4>
+<span class="font-label-md text-label-md text-on-surface-variant">Level 0 • EV</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#FEE2E2] text-[#991B1B] font-label-md text-[10px] uppercase tracking-wider">Occupied</span>
+</div>
+<div class="flex flex-col gap-xs py-sm border-y border-outline-variant/30">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Vehicle</span>
+<span class="font-semibold text-on-surface">TESLA-M3-24</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Duration</span>
+<span class="text-on-surface">1h 42m</span>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-auto">
+<button class="flex-1 py-2 text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-lg border border-transparent hover:border-primary-fixed transition-all">Edit</button>
+<button class="flex-1 py-2 bg-error/5 text-error font-label-md text-label-md hover:bg-error/10 rounded-lg transition-all">Release</button>
+</div>
+</div>
+<!-- Slot Card: Reserved Disabled -->
+<div class="slot-card bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">accessible</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight">D-012</h4>
+<span class="font-label-md text-label-md text-on-surface-variant">Level 1 • Disabled</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#DBEAFE] text-[#1E40AF] font-label-md text-[10px] uppercase tracking-wider">Reserved</span>
+</div>
+<div class="flex flex-col gap-xs py-sm border-y border-outline-variant/30">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Reserved By</span>
+<span class="font-semibold text-on-surface">James Wilson</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">ETA</span>
+<span class="text-on-surface">14:30 (15m)</span>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-auto">
+<button class="flex-1 py-2 text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-lg border border-transparent hover:border-primary-fixed transition-all">Edit</button>
+<button class="flex-1 py-2 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container rounded-lg transition-all">Cancel</button>
+</div>
+</div>
+<!-- Slot Card: Maintenance Two-Wheeler -->
+<div class="slot-card bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">moped</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight">B-501</h4>
+<span class="font-label-md text-label-md text-on-surface-variant">Level 2 • Bike</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#F1F5F9] text-[#475569] font-label-md text-[10px] uppercase tracking-wider">Maintenance</span>
+</div>
+<div class="flex flex-col gap-xs py-sm border-y border-outline-variant/30">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Issue</span>
+<span class="font-semibold text-error">Sensor Failure</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Schedule</span>
+<span class="text-on-surface">Today, 16:00</span>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-auto">
+<button class="flex-1 py-2 text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-lg border border-transparent hover:border-primary-fixed transition-all">Edit</button>
+<button class="flex-1 py-2 bg-secondary/10 text-secondary font-label-md text-label-md hover:bg-secondary/15 rounded-lg transition-all">Resolved</button>
+</div>
+</div>
+<!-- Repeated items for visual density -->
+<div class="slot-card bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">directions_car</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight">A-103</h4>
+<span class="font-label-md text-label-md text-on-surface-variant">Level 1 • Standard</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#D1FAE5] text-[#065F46] font-label-md text-[10px] uppercase tracking-wider">Available</span>
+</div>
+<div class="flex flex-col gap-xs py-sm border-y border-outline-variant/30">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">History</span>
+<span class="font-semibold text-on-surface">12 Sessions today</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Cleaning</span>
+<span class="text-on-surface">Pending</span>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-auto">
+<button class="flex-1 py-2 text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-lg border border-transparent hover:border-primary-fixed transition-all">Edit</button>
+<button class="flex-1 py-2 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container rounded-lg transition-all">Block</button>
+</div>
+</div>
+<div class="slot-card bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">ev_station</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight">E-045</h4>
+<span class="font-label-md text-label-md text-on-surface-variant">Level 0 • EV</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#FEE2E2] text-[#991B1B] font-label-md text-[10px] uppercase tracking-wider">Occupied</span>
+</div>
+<div class="flex flex-col gap-xs py-sm border-y border-outline-variant/30">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Charging</span>
+<span class="font-semibold text-secondary">Active (80%)</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Cost</span>
+<span class="text-on-surface">$12.40</span>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-auto">
+<button class="flex-1 py-2 text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-lg border border-transparent hover:border-primary-fixed transition-all">Edit</button>
+<button class="flex-1 py-2 bg-error/5 text-error font-label-md text-label-md hover:bg-error/10 rounded-lg transition-all">Release</button>
+</div>
+</div>
+<!-- Skeleton/Placeholder Add Button -->
+<button class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center gap-sm text-on-surface-variant hover:border-primary hover:text-primary transition-all group bg-surface/30">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined">add</span>
+</div>
+<span class="font-label-md text-label-md">Add New Slot</span>
+</button>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 px-4 bg-surface dark:bg-on-background border-t border-outline-variant lg:hidden shadow-lg">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Map</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">directions_car_filled</span>
+<span class="font-label-md text-label-md">Slots</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<!-- FAB for Create New Slot (Mobile) -->
+<button class="fixed right-6 bottom-20 md:hidden w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+<script>
+        // Micro-interactions for filtering
+        const filterButtons = document.querySelectorAll('.filter-chip');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('bg-primary-fixed', 'text-on-primary-fixed-variant'));
+                btn.classList.add('bg-primary-fixed', 'text-on-primary-fixed-variant');
+            });
+        });
+
+        // Simple search feedback
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.slot-card');
+            cards.forEach(card => {
+                const id = card.querySelector('h4').textContent.toLowerCase();
+                const meta = card.querySelector('span').textContent.toLowerCase();
+                if (id.includes(val) || meta.includes(val)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+<script src="../navigation.js"></script>
+</body></html>

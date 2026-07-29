@@ -1,0 +1,16 @@
+{
+  "name": "parksystem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix smart_parking_react",
+    "build": "npm run build --prefix smart_parking_react",
+    "start": "npm start --prefix backend",
+    "dev": "npx concurrently \"npm run dev --prefix smart_parking_react\" \"npm start --prefix backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

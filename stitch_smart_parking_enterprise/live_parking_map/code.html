@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ParkSystem - Live Map</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .parking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 12px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .slot-transition {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0b1c30",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary": "#006c49",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#00714d",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface": "#f8f9ff",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "background": "#f8f9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-surface": "#213145",
+                        "on-surface-variant": "#434655",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-container": "#6cf8bb",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#bc4800",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container": "#e5eeff",
+                        "primary-container": "#2563eb",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface": "#0b1c30",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-dim": "#cbdbf5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full bg-surface dark:bg-on-background text-primary dark:text-primary-fixed border-b border-outline-variant dark:border-outline shadow-sm flex items-center justify-between px-lg h-16 w-full z-50 transition-colors duration-200">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-low dark:hover:bg-surface-variant rounded-full transition-colors">menu</button>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">ParkSystem</h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="hidden md:flex items-center bg-surface-container px-4 py-1.5 rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-48" placeholder="Search slot ID..." type="text"/>
+</div>
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-low dark:hover:bg-surface-variant rounded-full transition-colors">search</button>
+</div>
+</header>
+<div class="flex h-[calc(100vh-64px)] overflow-hidden">
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden md:flex flex-col h-full py-md fixed left-0 top-16 h-[calc(100vh-64px)] w-[280px] bg-surface-container-low dark:bg-on-background border-r border-outline-variant dark:border-outline shadow-none transition-transform z-40">
+<div class="px-md mb-lg flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a facility manager named Alex, wearing a modern uniform, against a blurred background of a high-tech control room. The lighting is soft and even, highlighting a friendly yet authoritative expression. The color palette features deep blues and clean whites to match the corporate dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVbcFZUhm_QPaPT-znUO-1ytJieqEo4IqJvTY4EtnosJg_UrFoG0oA32Pcj003RiRJaUtDjQf8EQzO9NF0Iw1Ivm6nDmOKhXx15KnQNb3epEuaRGTj2zl103Hv8iJxry_QM_u1FoX_9uR5IYKOFcd2y2WUNXhmXo4r5mKQonMhUWKaEWDT73byYgXsO2Movg_rHsMPBtqunRiY_eF7ypcSUyIvwaVaKygk40ctJf9GxQ14Hdle1OC8I7t12u3ATRigEfeEaa_K4g"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary leading-tight">Alex Rivera</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">Facility Manager</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto">
+<!-- Dashboard -->
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Slot Management -->
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">directions_car_filled</span>
+<span class="font-label-md text-label-md">Slot Management</span>
+</a>
+<!-- Live Map (Active) -->
+<a class="flex items-center gap-4 px-4 py-3 bg-primary-container text-on-primary-container dark:bg-primary-fixed-variant dark:text-on-primary-fixed-variant rounded-lg mx-2 transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-md text-label-md">Live Map</span>
+</a>
+<!-- Rest of links -->
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-label-md text-label-md">Vehicle Registry</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-md text-label-md">Reservations</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<div class="mt-auto">
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-transform scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 ml-0 md:ml-[280px] h-full relative overflow-hidden bg-surface">
+<!-- Controls Layer -->
+<div class="absolute top-4 left-4 right-4 z-10 flex flex-col gap-4">
+<!-- Building / Floor Selection -->
+<div class="glass-panel p-2 rounded-xl border border-outline-variant shadow-sm flex items-center justify-between overflow-x-auto whitespace-nowrap">
+<div class="flex gap-2 p-1 bg-surface-container-low rounded-lg">
+<button class="px-6 py-1.5 bg-primary text-on-primary rounded-md font-label-md text-label-md shadow-md transition-all">North Terminal</button>
+<button class="px-6 py-1.5 hover:bg-surface-container text-on-surface-variant rounded-md font-label-md text-label-md transition-all">South Plaza</button>
+<button class="px-6 py-1.5 hover:bg-surface-container text-on-surface-variant rounded-md font-label-md text-label-md transition-all">East Wing</button>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-4"></div>
+<div class="flex gap-4 pr-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-primary text-primary font-bold">B1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-outline-variant text-on-surface-variant">L1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-outline-variant text-on-surface-variant">L2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-outline-variant text-on-surface-variant">L3</button>
+</div>
+</div>
+<!-- Legend -->
+<div class="self-start glass-panel p-3 rounded-lg border border-outline-variant shadow-sm flex gap-6">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-label-md font-label-md text-on-surface-variant">Available</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<span class="text-label-md font-label-md text-on-surface-variant">Occupied</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-tertiary">ev_station</span>
+<span class="text-label-md font-label-md text-on-surface-variant">EV Only</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">stars</span>
+<span class="text-label-md font-label-md text-on-surface-variant">VIP</span>
+</div>
+</div>
+</div>
+<!-- Map Area -->
+<div class="w-full h-full pt-32 p-4 md:p-8 overflow-auto flex items-center justify-center bg-[#f0f4f8] relative" id="map-container">
+<!-- Decorative floor grid lines -->
+<div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: radial-gradient(#004ac6 1px, transparent 0); background-size: 40px 40px;"></div>
+<!-- Floor Plan Layout -->
+<div class="relative bg-white p-12 rounded-2xl shadow-2xl border-4 border-outline-variant/30 min-w-[800px]">
+<div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none flex items-center justify-center font-black text-9xl">LEVEL B1</div>
+<div class="flex flex-col gap-12">
+<!-- Top Row Slots -->
+<div class="flex justify-between border-b-4 border-dashed border-outline-variant pb-8">
+<div class="parking-grid w-full">
+<!-- Slot Components Generated via JS for realism -->
+<div class="contents" id="north-row"></div>
+</div>
+</div>
+<!-- Central Drive Way -->
+<div class="h-32 bg-slate-100 flex items-center justify-center relative rounded-md border-y-2 border-slate-200">
+<div class="flex gap-16">
+<div class="w-12 h-1 bg-white opacity-50"></div>
+<div class="w-12 h-1 bg-white opacity-50"></div>
+<div class="w-12 h-1 bg-white opacity-50"></div>
+<div class="w-12 h-1 bg-white opacity-50"></div>
+</div>
+<span class="absolute right-4 bottom-2 text-slate-400 font-bold tracking-widest text-xs">ONE WAY -&gt;</span>
+</div>
+<!-- Bottom Row Slots -->
+<div class="flex justify-between border-t-4 border-dashed border-outline-variant pt-8">
+<div class="parking-grid w-full">
+<div class="contents" id="south-row"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Popup (Floating Bottom Right) -->
+<div class="fixed bottom-20 md:bottom-8 right-4 w-72 md:w-80 glass-panel rounded-2xl border border-outline-variant shadow-2xl translate-y-full transition-transform duration-500 z-30 overflow-hidden" id="detail-card">
+<div class="h-24 relative" id="card-header">
+<img class="w-full h-full object-cover" data-alt="A high-end modern electric SUV parked perfectly within a bright, well-lit indoor parking space with clean white walls and blue accent lighting. The car is sleek and charcoal grey, reflecting the ambient light. Professional architectural photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-itPHDUpt0kGogDtax8PglYoxauNMbbgHcOwMF2pg0AhgjXGjIyIB-CPkq5_FfL59JUnmB4zLPFYqJiThCq432HZwIhFXabPEY9w48ldpIy9N5jBDR8uai-j3266u-nyo0Wcvk6TZdIcRnbddJPDXeZ0470I_ZPKlBxm-AgAtYjEK6DW-x2ioyQFZGpDVBemDGaW46HB9vsTTdNfX1Khs8w8sz-J8fgWydbus1G7jUy6tm3EBusSvnpyZXk1RAaZ4fyxCwcLmlg"/>
+<button class="absolute top-2 right-2 w-8 h-8 bg-black/30 backdrop-blur rounded-full text-white flex items-center justify-center" onclick="hideDetails()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface" id="slot-id">Slot B1-042</h2>
+<span class="inline-block px-2 py-0.5 mt-1 rounded text-[10px] uppercase font-bold tracking-wider" id="slot-status">OCCUPIED</span>
+</div>
+<div class="text-primary" id="slot-icon">
+<span class="material-symbols-outlined text-[32px]">ev_station</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Vehicle:</span>
+<span class="font-bold text-on-surface">ABC-1234 (Tesla Model Y)</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Entry Time:</span>
+<span class="font-bold text-on-surface">09:12 AM</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="text-on-surface-variant">Duration:</span>
+<span class="font-bold text-on-surface">3h 42m</span>
+</div>
+</div>
+<div class="mt-6 flex gap-2">
+<button class="flex-1 py-2.5 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors">Contact Owner</button>
+<button class="p-2.5 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 px-4 bg-surface dark:bg-on-background text-on-surface-variant dark:text-surface-variant border-t border-outline-variant dark:border-outline shadow-lg lg:hidden transition-all duration-300">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary dark:text-primary-fixed" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-md text-label-md">Map</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-md text-label-md">Book</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        const northContainer = document.getElementById('north-row');
+        const southContainer = document.getElementById('south-row');
+        const detailCard = document.getElementById('detail-card');
+        const slotIdEl = document.getElementById('slot-id');
+        const statusEl = document.getElementById('slot-status');
+        const iconEl = document.getElementById('slot-icon');
+
+        const slots = Array.from({length: 40}, (_, i) => ({
+            id: `B1-${String(i+1).padStart(3, '0')}`,
+            occupied: Math.random() > 0.4,
+            type: Math.random() > 0.8 ? (Math.random() > 0.5 ? 'ev' : 'vip') : 'standard',
+            vehicle: 'Tesla Model Y',
+            plate: 'ABC-1234'
+        }));
+
+        function createSlot(slot) {
+            const div = document.createElement('div');
+            div.className = `slot-transition w-12 h-20 md:w-16 md:h-24 flex flex-col items-center justify-center rounded-md border-2 cursor-pointer
+                             ${slot.occupied ? 'bg-error-container border-error text-on-error-container' : 'bg-secondary-container border-secondary text-on-secondary-container'}
+                             hover:scale-110 hover:z-20 shadow-sm`;
+            
+            let icon = '';
+            if (slot.type === 'ev') icon = 'ev_station';
+            if (slot.type === 'vip') icon = 'stars';
+            
+            div.innerHTML = `
+                <span class="text-[10px] font-bold mb-1">${slot.id}</span>
+                ${icon ? `<span class="material-symbols-outlined text-[18px]">${icon}</span>` : ''}
+                ${slot.occupied ? '<span class="material-symbols-outlined text-[18px] mt-1" style="font-variation-settings: \'FILL\' 1;">directions_car</span>' : ''}
+            `;
+
+            div.onclick = (e) => {
+                e.stopPropagation();
+                showDetails(slot);
+            };
+            return div;
+        }
+
+        slots.slice(0, 20).forEach(s => northContainer.appendChild(createSlot(s)));
+        slots.slice(20, 40).forEach(s => southContainer.appendChild(createSlot(s)));
+
+        function showDetails(slot) {
+            slotIdEl.innerText = `Slot ${slot.id}`;
+            statusEl.innerText = slot.occupied ? 'OCCUPIED' : 'AVAILABLE';
+            statusEl.className = `inline-block px-2 py-0.5 mt-1 rounded text-[10px] uppercase font-bold tracking-wider ${slot.occupied ? 'bg-error text-on-error' : 'bg-secondary text-on-secondary'}`;
+            
+            let icon = 'directions_car';
+            if(slot.type === 'ev') icon = 'ev_station';
+            if(slot.type === 'vip') icon = 'stars';
+            iconEl.innerHTML = `<span class="material-symbols-outlined text-[32px]">${icon}</span>`;
+
+            detailCard.classList.remove('translate-y-full');
+        }
+
+        function hideDetails() {
+            detailCard.classList.add('translate-y-full');
+        }
+
+        // Close details when clicking map background
+        document.getElementById('map-container').addEventListener('click', hideDetails);
+
+        // Simple pulsing animation for occupied slots (micro-interaction)
+        setInterval(() => {
+            const occupied = document.querySelectorAll('.bg-error-container');
+            occupied.forEach(el => {
+                el.classList.toggle('opacity-90');
+            });
+        }, 2000);
+    </script>
+
+<script src="../navigation.js"></script>
+</body></html>

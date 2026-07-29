@@ -1,0 +1,100 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-background": "var(--color-on-background)",
+        "primary-fixed": "var(--color-primary-fixed)",
+        "secondary": "var(--color-secondary)",
+        "on-tertiary": "var(--color-on-tertiary)",
+        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+        "on-primary-fixed": "var(--color-on-primary-fixed)",
+        "surface-tint": "var(--color-surface-tint)",
+        "on-secondary-container": "var(--color-on-secondary-container)",
+        "surface-container-lowest": "var(--color-surface-container-lowest)",
+        "outline-variant": "var(--color-outline-variant)",
+        "surface-container-high": "var(--color-surface-container-high)",
+        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+        "surface": "var(--color-surface)",
+        "outline": "var(--color-outline)",
+        "on-primary-container": "var(--color-on-primary-container)",
+        "background": "var(--color-background)",
+        "surface-container-highest": "var(--color-surface-container-highest)",
+        "inverse-surface": "var(--color-inverse-surface)",
+        "on-surface-variant": "var(--color-on-surface-variant)",
+        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+        "on-primary": "var(--color-on-primary)",
+        "surface-variant": "var(--color-surface-variant)",
+        "secondary-container": "var(--color-secondary-container)",
+        "error": "var(--color-error)",
+        "tertiary-container": "var(--color-tertiary-container)",
+        "on-error": "var(--color-on-error)",
+        "on-tertiary-container": "var(--color-on-tertiary-container)",
+        "inverse-primary": "var(--color-inverse-primary)",
+        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+        "primary": "var(--color-primary)",
+        "secondary-fixed": "var(--color-secondary-fixed)",
+        "tertiary-fixed": "var(--color-tertiary-fixed)",
+        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+        "on-secondary": "var(--color-on-secondary)",
+        "surface-bright": "var(--color-surface-bright)",
+        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+        "surface-container": "var(--color-surface-container)",
+        "primary-container": "var(--color-primary-container)",
+        "surface-container-low": "var(--color-surface-container-low)",
+        "on-surface": "var(--color-on-surface)",
+        "error-container": "var(--color-error-container)",
+        "on-error-container": "var(--color-on-error-container)",
+        "inverse-on-surface": "var(--color-inverse-on-surface)",
+        "tertiary": "var(--color-tertiary)",
+        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+        "surface-dim": "var(--color-surface-dim)"
+      },
+      borderRadius: {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      spacing: {
+        "md": "16px",
+        "margin-desktop": "40px",
+        "lg": "24px",
+        "xs": "4px",
+        "sm": "8px",
+        "xl": "32px",
+        "unit": "4px",
+        "gutter": "20px",
+        "margin-mobile": "16px"
+      },
+      fontFamily: {
+        "body-md": ["Inter", "sans-serif"],
+        "label-md": ["Inter", "sans-serif"],
+        "headline-lg-mobile": ["Inter", "sans-serif"],
+        "headline-md": ["Inter", "sans-serif"],
+        "display": ["Inter", "sans-serif"],
+        "body-lg": ["Inter", "sans-serif"],
+        "headline-lg": ["Inter", "sans-serif"]
+      },
+      fontSize: {
+        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+      }
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/container-queries')
+  ],
+}
