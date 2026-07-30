@@ -9,6 +9,11 @@ const path = require('path');
 const rateLimit = require('express-rate-limit');
 const db = require('./db');
 const { sendReservationConfirmation } = require('./emailService');
+const { OAuth2Client } = require('google-auth-library');
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '100560176750-p4v3u3glpfl44687unh3p81ejr6m2g0p.apps.googleusercontent.com';
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
 
 const app = express();
 const server = http.createServer(app);
@@ -192,6 +197,61 @@ app.post('/api/auth/register', (req, res) => {
     broadcast('user:update', { action: 'create' });
     recalculateMetrics();
     res.json({ token, user: newUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/auth/google (Google Sign-In)
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ error: 'Token is required' });
+
+    let payload;
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: GOOGLE_CLIENT_ID,
+      });
+      payload = ticket.getPayload();
+    } catch (err) {
+      return res.status(401).json({ error: 'Invalid Google token' });
+    }
+
+    const { email, name } = payload;
+
+    // Check if user exists
+    let user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+
+    if (user) {
+      // Check if user is active
+      if (user.status === 'Inactive') {
+        return res.status(403).json({ error: 'Your account has been deactivated. Please contact an administrator.' });
+      }
+    } else {
+      // Create new user with a random placeholder password
+      const randomPassword = require('crypto').randomBytes(16).toString('hex');
+      const hashedPassword = bcrypt.hashSync(randomPassword, 10);
+      const userRole = 'visitor'; // Default role for Google users
+      
+      const info = db.prepare('INSERT INTO users (name, email, password, role, status, token_version) VALUES (?, ?, ?, ?, ?, 0)')
+        .run(name, email, hashedPassword, userRole, 'Active');
+      
+      user = { id: info.lastInsertRowid, name, email, role: userRole, status: 'Active', token_version: 0 };
+      
+      broadcast('user:update', { action: 'create' });
+      recalculateMetrics();
+    }
+
+    // Generate standard JWT
+    const jwtToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role, tv: user.token_version },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    const { password: _, ...safeUser } = user;
+    res.json({ token: jwtToken, user: safeUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

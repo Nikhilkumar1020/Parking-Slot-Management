@@ -62,6 +62,21 @@ export const AuthProvider = ({ children }) => {
     return data.user;
   };
 
+  const googleLogin = async (googleToken) => {
+    const res = await fetch('/api/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: googleToken }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Google login failed');
+    setUser(data.user);
+    setToken(data.token);
+    localStorage.setItem('parkSystemUser', JSON.stringify(data.user));
+    localStorage.setItem('parkSystemToken', data.token);
+    return data.user;
+  };
+
   const updateUser = useCallback((updatedFields) => {
     const updated = { ...user, ...updatedFields };
     setUser(updated);
@@ -87,7 +102,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, token, login, register, googleLogin, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, authFetch } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
 
 const ROLE_ROUTES = {
   superadmin: '/admin-dashboard',
@@ -21,7 +22,7 @@ const DEMO_ACCOUNTS = [
 ];
 
 export default function AuthenticationLogin() {
-  const { login, register } = useAuth();
+  const { login, register, googleLogin } = useAuth();
   const navigate = useNavigate();
   
   const [isRegistering, setIsRegistering] = useState(false);
@@ -58,6 +59,24 @@ export default function AuthenticationLogin() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setIsLoading(true);
+    try {
+      const user = await googleLogin(credentialResponse.credential);
+      const route = ROLE_ROUTES[user.role] || '/landing-dashboard';
+      navigate(route);
+    } catch (err) {
+      setError(err.message || 'Google Sign-In failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google Sign-In failed');
   };
 
   const handleRegister = async (e) => {
@@ -132,7 +151,7 @@ export default function AuthenticationLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">domain</span>
                 <input 
-                  className="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
+                  className="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
                   placeholder="e.g. Downtown Plaza" 
                   type="text" value={facility} onChange={(e) => setFacility(e.target.value)} required
                 />
@@ -143,7 +162,7 @@ export default function AuthenticationLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">person</span>
                 <input 
-                  className="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
+                  className="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
                   placeholder="John Doe" 
                   type="text" value={name} onChange={(e) => setName(e.target.value)} required
                 />
@@ -154,7 +173,7 @@ export default function AuthenticationLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
                 <input 
-                  className="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
+                  className="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
                   placeholder="superadmin@parksystem.com" 
                   type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                 />
@@ -165,7 +184,7 @@ export default function AuthenticationLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
                 <input 
-                  className="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
+                  className="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
                   placeholder="••••••••" 
                   type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
                 />
@@ -177,6 +196,14 @@ export default function AuthenticationLogin() {
             >
               {isLoading ? 'Registering...' : 'Register Facility & Create Admin'}
             </button>
+            <div className="flex justify-center my-2">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                text="signup_with"
+                width="100%"
+              />
+            </div>
             <p className="text-center text-body-md text-on-surface-variant">
               Already registered? <button type="button" onClick={() => { setIsRegistering(false); setError(''); }} className="text-primary font-bold hover:underline cursor-pointer">Sign In</button>
             </p>
@@ -189,7 +216,7 @@ export default function AuthenticationLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
                 <input 
-                  className="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
+                  className="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
                   placeholder="you@parksystem.com" 
                   type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                 />
@@ -200,7 +227,7 @@ export default function AuthenticationLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
                 <input 
-                  className="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
+                  className="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" 
                   placeholder="••••••••" 
                   type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
                 />
@@ -212,6 +239,13 @@ export default function AuthenticationLogin() {
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
+            <div className="flex justify-center my-2">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                width="100%"
+              />
+            </div>
             <p className="text-center text-body-md text-on-surface-variant">
               New facility? <button type="button" onClick={() => { setIsRegistering(true); setError(''); }} className="text-primary font-bold hover:underline cursor-pointer">Register Here</button>
             </p>

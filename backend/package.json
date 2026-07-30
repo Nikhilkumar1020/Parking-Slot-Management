@@ -12,11 +12,12 @@
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^13.0.1",
+    "better-sqlite3": "^11.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.6.0",
+    "google-auth-library": "^11.0.0",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^9.0.3",
     "qrcode": "^1.5.4",
