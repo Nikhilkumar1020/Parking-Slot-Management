@@ -28,7 +28,8 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static frontend in production
-app.use(express.static(path.join(__dirname, '../smart_parking_react/dist')));
+const distPath = path.join(__dirname, '../smart_parking_react/dist');
+app.use(express.static(distPath));
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 const loginLimiter = rateLimit({
@@ -755,7 +756,13 @@ app.get('/api/search', authenticate, (req, res) => {
 
 // ─── Catch-All Route for React Router ────────────────────────────────────────
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../smart_parking_react/dist', 'index.html'));
+  const indexFile = path.join(__dirname, '../smart_parking_react/dist', 'index.html');
+  const fs = require('fs');
+  if (fs.existsSync(indexFile)) {
+    res.sendFile(indexFile);
+  } else {
+    res.status(200).send('<h2>Building... Please refresh in 30 seconds.</h2><script>setTimeout(()=>location.reload(),30000)</script>');
+  }
 });
 
 // ─── Start Server ─────────────────────────────────────────────────────────────

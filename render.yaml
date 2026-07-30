@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: parking-system
+    env: node
+    buildCommand: npm install --prefix backend && npm install --prefix smart_parking_react && npm run build --prefix smart_parking_react
+    startCommand: node backend/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GOOGLE_CLIENT_ID
+        value: 100560176750-p4v3u3glpfl44687unh3p81ejr6m2g0p.apps.googleusercontent.com
