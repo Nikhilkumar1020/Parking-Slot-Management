@@ -767,7 +767,15 @@ app.use((req, res) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 server.listen(PORT, () => {
+  const fs = require('fs');
+  const distExists = fs.existsSync(distPath);
   console.log(`\n🚀 ParkSystem Real-Time Server running on http://localhost:${PORT}`);
+  console.log(`📁 Dist folder path: ${distPath}`);
+  console.log(`📁 Dist folder exists: ${distExists}`);
+  if (distExists) {
+    const files = fs.readdirSync(distPath);
+    console.log(`📁 Dist folder contents: ${files.join(', ')}`);
+  }
   console.log(`📡 Socket.IO with state:sync, force:relogin, and request:sync events`);
   console.log(`🔒 JWT auth with token_version liveness checks (Issues #4, #5)`);
   console.log(`⚡ Atomic reservation POST with race guard (Issue #1)`);
