@@ -1,0 +1,19 @@
+# ParkSystem — YOLO Dataset Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# Dataset: PKLot (Parking Lot Dataset) + custom samples
+# Source:  https://www.inf.ufpr.br/vri/databases/PKLot/
+#
+# Annotations are in YOLO format (normalized xywh per line).
+# Class 0 = car  |  Class 1 = truck  |  Class 2 = motorcycle
+# ─────────────────────────────────────────────────────────────────────────────
+
+path:  ../datasets          # root (relative to ai-service/)
+train: train/images
+val:   val/images
+test:  test/images
+
+nc: 3
+names:
+  0: car
+  1: truck
+  2: motorcycle

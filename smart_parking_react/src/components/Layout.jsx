@@ -14,6 +14,7 @@ const ALL_NAV_ITEMS = [
   { path: '/visitor-management', icon: 'group_add', label: 'Visitor Access', roles: ['superadmin', 'facility_manager', 'security_officer'] },
   { path: '/reservation-module', icon: 'calendar_month', label: 'Reservations', roles: ['superadmin', 'parking_administrator', 'employee', 'visitor'] },
   { path: '/live-parking-map', icon: 'map', label: 'Live Map', roles: ['superadmin', 'parking_administrator', 'security_officer'] },
+  { path: '/ai-control', icon: 'smart_toy', label: 'AI Control', roles: ['superadmin', 'facility_manager', 'parking_administrator'] },
   { path: '/reports-analytics', icon: 'query_stats', label: 'Analytics', roles: ['superadmin', 'facility_manager'] },
   { path: '/user-management', icon: 'manage_accounts', label: 'User Management', roles: ['superadmin'] },
   { path: '/notifications-center', icon: 'notifications', label: 'Notifications', roles: ['superadmin', 'facility_manager', 'parking_administrator', 'security_officer', 'employee', 'visitor'] },

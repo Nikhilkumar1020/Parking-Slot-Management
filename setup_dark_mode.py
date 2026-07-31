@@ -2,8 +2,8 @@ import re
 import os
 import colorsys
 
-tailwind_path = r'c:\Users\nikhi\Videos\ParkSystem\smart_parking_react\tailwind.config.js'
-css_path = r'c:\Users\nikhi\Videos\ParkSystem\smart_parking_react\src\index.css'
+tailwind_path = r'c:\Users\Rakesh\OneDrive\Desktop\Project II\Parking-Slot-Management\smart_parking_react\tailwind.config.js'
+css_path = r'c:\Users\Rakesh\OneDrive\Desktop\Project II\Parking-Slot-Management\smart_parking_react\src\index.css'
 
 with open(tailwind_path, 'r', encoding='utf-8') as f:
     tailwind_content = f.read()

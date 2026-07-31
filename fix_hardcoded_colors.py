@@ -1,6 +1,6 @@
 import os
 
-directory = r'c:\Users\nikhi\Videos\ParkSystem\smart_parking_react\src'
+directory = r'c:\Users\Rakesh\OneDrive\Desktop\Project II\Parking-Slot-Management\smart_parking_react\src'
 
 replacements = {
     'bg-[#D1FAE5] text-[#065F46]': 'bg-primary-container text-on-primary-container',

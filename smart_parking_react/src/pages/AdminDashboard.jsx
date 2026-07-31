@@ -55,7 +55,8 @@ export default function AdminDashboard() {
       });
       setMetrics(metricsMap);
       
-      setReservations(resData.filter(r => ['Pending', 'Confirmed', 'Checked-In'].includes(r.status)));
+      const reservationsList = Array.isArray(resData) ? resData : (resData.data || []);
+      setReservations(reservationsList.filter(r => ['Pending', 'Confirmed', 'Checked-In'].includes(r.status)));
       setNotifications(notifData.slice(0, 4));
     } catch (err) {
       console.error(err);
@@ -310,6 +311,7 @@ export default function AdminDashboard() {
     </>
   );
 }
+
 
 
 

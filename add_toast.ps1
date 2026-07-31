@@ -1,4 +1,4 @@
-$dir = "c:\Users\nikhi\Videos\ParkSystem\smart_parking_react\src\pages"
+$dir = "c:\Users\Rakesh\OneDrive\Desktop\Project II\Parking-Slot-Management\smart_parking_react\src\pages"
 $files = @("LandingDashboard.jsx", "NotificationsCenter.jsx", "ReservationModule.jsx", "VehicleManagement.jsx", "VisitorManagement.jsx", "SlotManagement.jsx", "AdminDashboard.jsx")
 
 foreach ($file in $files) {

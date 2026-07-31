@@ -73,7 +73,7 @@ export default function UserManagement() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await authFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newName, email: newEmail, password: newPassword, role: newRole }),
@@ -341,3 +341,4 @@ export default function UserManagement() {
     </>
   );
 }
+

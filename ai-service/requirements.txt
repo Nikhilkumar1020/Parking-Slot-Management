@@ -1,0 +1,28 @@
+# ── Core Framework ────────────────────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9      # for file upload support
+
+# ── Computer Vision & Deep Learning ───────────────────────────────────────────
+torch==2.3.0
+torchvision==0.18.0
+ultralytics==8.2.18          # YOLOv8 — vehicle + plate detection
+
+# ── OpenCV & Image Processing ─────────────────────────────────────────────────
+opencv-python-headless==4.9.0.80
+Pillow==10.3.0
+numpy==1.26.4
+
+# ── OCR ───────────────────────────────────────────────────────────────────────
+easyocr==1.7.1
+
+# ── Evaluation & Metrics ──────────────────────────────────────────────────────
+scikit-learn==1.5.0
+matplotlib==3.9.0
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+pydantic==2.7.1
+httpx==0.27.0                # for Node.js ↔ Python health checks
+python-dotenv==1.0.1
+tqdm==4.66.4
+PyYAML==6.0.1

@@ -11,6 +11,10 @@ export default function LiveParkingMap() {
   const [showDetails, setShowDetails] = useState(false);
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  // AI mode state
+  const [aiMode, setAiMode] = useState(false);                    // true = AI-sourced
+  const [aiOccupancy, setAiOccupancy] = useState({});             // {slotId: 'Occupied'|'Available'}
+  const [lastAiUpdate, setLastAiUpdate] = useState(null);
 
   const fetchSlots = useCallback(() => {
     authFetch('/api/slots')
@@ -21,7 +25,7 @@ export default function LiveParkingMap() {
 
   useEffect(() => { fetchSlots(); }, [fetchSlots]);
 
-  // Real-time: auto-refresh on slot events
+  // Real-time: auto-refresh on manual slot events
   useEffect(() => {
     if (!socket) return;
     const handler = () => fetchSlots();
@@ -29,26 +33,44 @@ export default function LiveParkingMap() {
     return () => { socket.off('slot:update', handler); };
   }, [socket, fetchSlots]);
 
+  // Real-time: AI occupancy updates
+  useEffect(() => {
+    if (!socket) return;
+    const handler = (data) => {
+      setAiOccupancy(data.slots || {});
+      setLastAiUpdate(data);
+      if (!aiMode) setAiMode(true); // auto-enable AI mode on first AI event
+    };
+    socket.on('ai:occupancy-update', handler);
+    return () => { socket.off('ai:occupancy-update', handler); };
+  }, [socket, aiMode]);
+
   const handleSlotClick = (slot) => {
     setSelectedSlot(slot);
     setShowDetails(true);
   };
 
   const renderSlot = (slot) => {
-    const isOccupied = slot.status === 'Occupied';
+    // In AI mode, override status from AI occupancy data when available
+    const effectiveStatus = (aiMode && aiOccupancy[slot.slotId]) ? aiOccupancy[slot.slotId] : slot.status;
+    const isOccupied = effectiveStatus === 'Occupied';
     const isEV = slot.type === 'EV';
+    const isAIOverride = aiMode && aiOccupancy[slot.slotId];
     return (
       <div 
         key={slot.id} 
         onClick={() => handleSlotClick(slot)}
         className={`w-24 h-40 border-2 ${isOccupied ? 'border-error bg-error/10' : 'border-secondary bg-secondary/10'} rounded-lg flex flex-col items-center justify-center cursor-pointer hover:opacity-80 transition-opacity m-2 relative`}
       >
-        <span className="font-bold text-on-surface mb-2">{slot.slot_number}</span>
+        <span className="font-bold text-on-surface mb-2">{slot.slotId}</span>
         {isOccupied && (
           <span className="material-symbols-outlined text-error text-4xl">directions_car</span>
         )}
         {isEV && (
           <span className="material-symbols-outlined text-tertiary absolute top-1 right-1 text-sm">ev_station</span>
+        )}
+        {isAIOverride && (
+          <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] font-bold text-primary bg-primary/10 px-1 rounded">AI</span>
         )}
       </div>
     );
@@ -65,6 +87,19 @@ export default function LiveParkingMap() {
             <button className="px-6 py-1.5 hover:bg-surface-container text-on-surface-variant rounded-md font-label-md text-label-md transition-all cursor-pointer">East Wing</button>
           </div>
           <div className="h-6 w-px bg-outline-variant mx-4"></div>
+          {/* AI Mode Toggle */}
+          <div className="flex items-center gap-2 mr-4">
+            <button
+              onClick={() => setAiMode(m => !m)}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-label-md font-label-md border transition-all cursor-pointer ${aiMode ? 'bg-primary text-on-primary border-primary shadow-md' : 'bg-surface text-on-surface-variant border-outline-variant hover:border-primary'}`}
+            >
+              <span className="material-symbols-outlined text-[16px]">smart_toy</span>
+              {aiMode ? 'AI Mode' : 'Manual'}
+            </button>
+            {aiMode && lastAiUpdate && (
+              <span className="text-[11px] text-secondary animate-pulse font-bold">● LIVE</span>
+            )}
+          </div>
           <div className="flex gap-4 pr-4">
             <button className="w-10 h-10 flex items-center justify-center rounded-full border border-primary text-primary font-bold cursor-pointer">B1</button>
             <button className="w-10 h-10 flex items-center justify-center rounded-full border border-outline-variant text-on-surface-variant cursor-pointer">L1</button>
@@ -172,5 +207,6 @@ export default function LiveParkingMap() {
     </>
   );
 }
+
 
 

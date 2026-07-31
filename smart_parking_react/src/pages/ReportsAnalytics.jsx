@@ -6,7 +6,7 @@ const roleConfig = {
   superadmin: {
     title: 'Reports & Analytics — System Wide',
     subtitle: 'Complete performance metrics across all facilities.',
-    tabs: ['Occupancy', 'Revenue', 'Users', 'Facilities'],
+    tabs: ['Occupancy', 'Revenue', 'Users', 'Facilities', 'AI Monitoring'],
     showRevenue: true,
     showUserMetrics: true,
     showFacilityMetrics: true,
@@ -14,7 +14,7 @@ const roleConfig = {
   facility_manager: {
     title: 'Facility Reports',
     subtitle: 'Performance and utilization reports for your facility.',
-    tabs: ['Occupancy', 'Revenue', 'Maintenance'],
+    tabs: ['Occupancy', 'Revenue', 'Maintenance', 'AI Monitoring'],
     showRevenue: true,
     showUserMetrics: false,
     showFacilityMetrics: false,
@@ -30,6 +30,7 @@ export default function ReportsAnalytics() {
   const [metrics, setMetrics] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(config.tabs[0]);
+  const [aiMetrics, setAiMetrics] = useState(null);
 
   const fetchMetrics = useCallback(async () => {
     try {
@@ -47,7 +48,15 @@ export default function ReportsAnalytics() {
     }
   }, []);
 
-  useEffect(() => { fetchMetrics(); }, [fetchMetrics]);
+  const fetchAiMetrics = useCallback(async () => {
+    try {
+      const res  = await authFetch('/api/ai/metrics');
+      const data = await res.json();
+      setAiMetrics(data);
+    } catch {}
+  }, []);
+
+  useEffect(() => { fetchMetrics(); fetchAiMetrics(); }, [fetchMetrics, fetchAiMetrics]);
 
   // Real-time: auto-refresh on metric events
   useEffect(() => {
@@ -58,11 +67,12 @@ export default function ReportsAnalytics() {
   }, [socket, fetchMetrics]);
 
   const tabIcons = {
-    Occupancy: 'donut_large',
-    Revenue: 'payments',
-    Users: 'group',
-    Facilities: 'domain',
-    Maintenance: 'build',
+    Occupancy:      'donut_large',
+    Revenue:        'payments',
+    Users:          'group',
+    Facilities:     'domain',
+    Maintenance:    'build',
+    'AI Monitoring': 'smart_toy',
   };
 
   return (
@@ -103,6 +113,74 @@ export default function ReportsAnalytics() {
 
         {loading ? (
           <div className="flex justify-center py-20"><span className="material-symbols-outlined animate-spin text-5xl text-primary">refresh</span></div>
+        ) : activeTab === 'AI Monitoring' ? (
+          /* ── AI Monitoring Tab ─────────────────────────────────────────── */
+          <div className="space-y-lg">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md">
+              {[
+                { label: 'Precision',    key: 'precision',  icon: 'target',            color: 'text-primary'   },
+                { label: 'Recall',       key: 'recall',     icon: 'sensors',           color: 'text-secondary' },
+                { label: 'F1-Score',     key: 'f1',         icon: 'show_chart',        color: 'text-tertiary'  },
+                { label: 'mAP@0.5',     key: 'mAP50',      icon: 'grade',             color: 'text-primary'   },
+                { label: 'mAP@0.5:0.95',key: 'mAP50_95',   icon: 'stacked_bar_chart', color: 'text-secondary' },
+                { label: 'Avg Latency', key: '_latency',   icon: 'speed',             color: 'text-tertiary'  },
+              ].map(({ label, key, icon, color }) => {
+                const evalB = aiMetrics?.evaluation?.base || {};
+                const rt    = aiMetrics?.runtime || {};
+                const rawVal = key === '_latency' ? rt.avg_latency_ms : evalB[key];
+                const display = key === '_latency'
+                  ? (rawVal ? `${rawVal} ms` : '—')
+                  : (rawVal ? `${(rawVal * 100).toFixed(1)}%` : '—');
+                return (
+                  <div key={label} className="bg-surface rounded-xl border border-outline-variant p-md shadow-sm text-center">
+                    <span className={`material-symbols-outlined ${color} text-[32px] mb-xs block`}>{icon}</span>
+                    <p className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-xs">{label}</p>
+                    <p className={`font-display text-[28px] leading-none ${rawVal ? color : 'text-on-surface-variant'}`}>{display}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+              {/* Runtime info */}
+              <div className="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+                <h3 className="font-headline-md text-headline-md text-on-surface mb-md">Runtime Stats</h3>
+                {([
+                  ['Total Requests',   aiMetrics?.runtime?.total_requests ?? '—', 'query_stats'],
+                  ['Last Inference',   aiMetrics?.runtime?.last_inference_ms ? `${aiMetrics.runtime.last_inference_ms} ms` : '—', 'timer'],
+                  ['Estimated FPS',    aiMetrics?.runtime?.avg_latency_ms ? `${(1000 / aiMetrics.runtime.avg_latency_ms).toFixed(1)}` : '—', 'videocam'],
+                  ['Model Version',    aiMetrics?.runtime?.model_version ?? 'pretrained-coco', 'model_training'],
+                  ['Service Status',   aiMetrics ? 'Reachable' : 'Unavailable', 'lan'],
+                ]).map(([label, val, icon]) => (
+                  <div key={label} className="flex items-center justify-between py-sm border-b border-outline-variant last:border-0">
+                    <div className="flex items-center gap-sm">
+                      <span className="material-symbols-outlined text-primary text-[18px]">{icon}</span>
+                      <span className="font-body-lg text-on-surface">{label}</span>
+                    </div>
+                    <span className="font-bold text-on-surface">{val}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* How to populate */}
+              <div className="bg-surface-container rounded-xl border border-outline-variant p-lg shadow-sm">
+                <h3 className="font-headline-md text-headline-md text-on-surface mb-md">How to Populate Metrics</h3>
+                <p className="text-body-md text-on-surface-variant mb-md">Metrics appear here automatically after running evaluation.</p>
+                {[
+                  ['1. Download dataset', 'PKLot dataset (parking lot images + YOLO annotations)'],
+                  ['2. Fine-tune model',  'cd ai-service && python training/train.py'],
+                  ['3. Evaluate',         'python training/evaluate.py'],
+                  ['4. Robustness test',  'python evaluation/robustness.py'],
+                  ['5. Start AI service', 'uvicorn api:app --port 8000'],
+                ].map(([step, desc]) => (
+                  <div key={step} className="mb-sm">
+                    <p className="font-bold text-on-surface text-body-md">{step}</p>
+                    <code className="text-sm font-mono text-primary">{desc}</code>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg">
             {/* Main Chart Area */}
@@ -178,5 +256,6 @@ export default function ReportsAnalytics() {
     </>
   );
 }
+
 
 

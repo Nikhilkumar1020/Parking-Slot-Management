@@ -1,4 +1,4 @@
-$dir = "c:\Users\nikhi\Videos\ParkSystem\smart_parking_react\src\pages"
+$dir = "c:\Users\Rakesh\OneDrive\Desktop\Project II\Parking-Slot-Management\smart_parking_react\src\pages"
 Get-ChildItem "$dir\*.jsx" | ForEach-Object {
   $content = Get-Content $_.FullName -Raw
   # Fix doubled prefix

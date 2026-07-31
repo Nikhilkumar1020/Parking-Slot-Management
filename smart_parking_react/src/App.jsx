@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { ToastProvider } from './context/ToastContext';
 import Layout from './components/Layout';
+import AIControlCenter from './pages/AIControlCenter';
 import AdminDashboard from './pages/AdminDashboard';
 import AuthenticationLogin from './pages/AuthenticationLogin';
 import EmployeeDashboard from './pages/EmployeeDashboard';
@@ -20,9 +21,9 @@ import UserManagement from './pages/UserManagement';
 
 // Define route permissions
 const rolePermissions = {
-  superadmin: ['/admin-dashboard', '/slot-management', '/vehicle-management', '/visitor-management', '/reservation-module', '/live-parking-map', '/reports-analytics', '/user-profile', '/notifications-center', '/employee-dashboard', '/landing-dashboard', '/user-management'],
-  facility_manager: ['/admin-dashboard', '/reports-analytics', '/vehicle-management', '/visitor-management', '/user-profile', '/notifications-center'],
-  parking_administrator: ['/slot-management', '/reservation-module', '/vehicle-management', '/live-parking-map', '/user-profile', '/notifications-center'],
+  superadmin: ['/admin-dashboard', '/slot-management', '/vehicle-management', '/visitor-management', '/reservation-module', '/live-parking-map', '/reports-analytics', '/user-profile', '/notifications-center', '/employee-dashboard', '/landing-dashboard', '/user-management', '/ai-control'],
+  facility_manager: ['/admin-dashboard', '/reports-analytics', '/vehicle-management', '/visitor-management', '/user-profile', '/notifications-center', '/ai-control'],
+  parking_administrator: ['/slot-management', '/reservation-module', '/vehicle-management', '/live-parking-map', '/user-profile', '/notifications-center', '/ai-control'],
   security_officer: ['/visitor-management', '/live-parking-map', '/notifications-center', '/user-profile'],
   employee: ['/employee-dashboard', '/vehicle-management', '/reservation-module', '/user-profile', '/notifications-center'],
   visitor: ['/landing-dashboard', '/reservation-module', '/user-profile', '/notifications-center'],
@@ -62,6 +63,7 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/ai-control" element={<AIControlCenter />} />
                 <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
                 <Route path="/landing-dashboard" element={<LandingDashboard />} />
                 <Route path="/live-parking-map" element={<LiveParkingMap />} />

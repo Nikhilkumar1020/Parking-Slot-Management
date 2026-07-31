@@ -94,6 +94,8 @@ io.on('connection', (socket) => {
     if (['superadmin', 'facility_manager', 'parking_administrator'].includes(data.role)) {
       socket.join('admin');
     }
+    // Join role-specific room so AI events can be role-targeted
+    if (data.role) socket.join(data.role);
   });
 
   // Issue #7 — on reconnect, client asks for a full state snapshot
@@ -754,6 +756,199 @@ app.get('/api/search', authenticate, (req, res) => {
   }
 });
 
+
+
+// ─── AI Service Integration ─────────────────────────────────────────────────
+// The Python FastAPI AI service runs separately on port 8000.
+// These endpoints act as a secure proxy: Node validates the JWT, then
+// forwards the image to the AI service and broadcasts results via Socket.IO.
+
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+const FormDataNode = (...args) => import('form-data').then(({ default: FD }) => new FD(...args));
+
+// ── GET /api/ai/status ────────────────────────────────────────────────────────
+// Check if the Python AI service is alive. Called by React AIControlCenter.
+app.get('/api/ai/status', authenticate, async (req, res) => {
+  try {
+    const controller = new AbortController();
+    const timeout    = setTimeout(() => controller.abort(), 3000);
+    const r = await fetch(`${AI_SERVICE_URL}/health`, { signal: controller.signal });
+    clearTimeout(timeout);
+    const data = await r.json();
+    res.json({ online: true, ...data });
+  } catch (err) {
+    res.json({ online: false, error: 'AI service unreachable' });
+  }
+});
+
+// ── GET /api/ai/metrics ───────────────────────────────────────────────────────
+// Return model evaluation metrics (populated after fine-tuning + evaluate.py).
+app.get('/api/ai/metrics', authenticate, async (req, res) => {
+  try {
+    // Serve from DB first (synced from AI service), fall back to AI service
+    const stored = db.prepare("SELECT key, value, updated_at FROM ai_metrics").all();
+    if (stored.length > 0) {
+      const metricsObj = {};
+      stored.forEach(r => { metricsObj[r.key] = { value: r.value, updated_at: r.updated_at }; });
+      return res.json({ source: 'db', metrics: metricsObj });
+    }
+    const r = await fetch(`${AI_SERVICE_URL}/metrics/model`);
+    const data = await r.json();
+    res.json({ source: 'ai_service', ...data });
+  } catch (err) {
+    res.status(503).json({ error: 'AI service unreachable and no cached metrics.' });
+  }
+});
+
+// ── POST /api/ai/analyze-frame ────────────────────────────────────────────────
+// Upload a parking-lot image → AI detects vehicle occupancy → updates DB slots
+// → broadcasts ai:occupancy-update via Socket.IO.
+app.post('/api/ai/analyze-frame', authenticate,
+  requireRole('superadmin', 'facility_manager', 'parking_administrator'),
+  async (req, res) => {
+    try {
+      if (!req.headers['content-type']?.includes('multipart/form-data')) {
+        return res.status(400).json({ error: 'Expected multipart/form-data with image file.' });
+      }
+
+      // Pipe the multipart body directly to the AI service
+      const { PassThrough } = require('stream');
+      const proxyRes = await fetch(`${AI_SERVICE_URL}/detect-occupancy`, {
+        method:  'POST',
+        headers: { 'content-type': req.headers['content-type'] },
+        body:    req,
+      });
+
+      if (!proxyRes.ok) {
+        const errText = await proxyRes.text();
+        return res.status(502).json({ error: 'AI service error', detail: errText });
+      }
+
+      const aiResult = await proxyRes.json();
+
+      // ── Update DB slots based on AI occupancy result ─────────────────────
+      const slotUpdates = aiResult.slots || {};
+      const updateSlot  = db.prepare(
+        "UPDATE slots SET status = ?, lastEvent = datetime('now') WHERE slotId = ?"
+      );
+      const batchUpdate = db.transaction(() => {
+        for (const [slotId, status] of Object.entries(slotUpdates)) {
+          updateSlot.run(status, slotId);
+        }
+      });
+      batchUpdate();
+
+      // ── Log inference ─────────────────────────────────────────────────────
+      try {
+        db.prepare(
+          `INSERT INTO ai_inference_log
+            (timestamp, camera_zone, slots_detected, occupied_count, inference_ms, model_version)
+           VALUES (datetime('now'), ?, ?, ?, ?, ?)`
+        ).run(
+          req.body?.zone_name || 'north_terminal',
+          Object.keys(slotUpdates).length,
+          aiResult.occupied_count || 0,
+          aiResult.inference_ms   || 0,
+          'yolov8n'
+        );
+      } catch (_) { /* non-critical */ }
+
+      // ── Broadcast to all connected clients ────────────────────────────────
+      broadcast('ai:occupancy-update', {
+        slots:          slotUpdates,
+        occupied_count: aiResult.occupied_count,
+        total_slots:    aiResult.total_slots,
+        occupancy_pct:  aiResult.occupancy_pct,
+        inference_ms:   aiResult.inference_ms,
+        timestamp:      new Date().toISOString(),
+      });
+
+      recalculateMetrics();
+      res.json({ ok: true, ...aiResult });
+
+    } catch (err) {
+      console.error('[AI] analyze-frame error:', err.message);
+      res.status(500).json({ error: 'Frame analysis failed.', detail: err.message });
+    }
+  }
+);
+
+// ── POST /api/ai/detect-plate ─────────────────────────────────────────────────
+// Upload a vehicle image → AI reads license plate → checks against vehicles table
+// → broadcasts security alert if plate is unregistered.
+app.post('/api/ai/detect-plate', authenticate,
+  requireRole('superadmin', 'parking_administrator', 'security_officer'),
+  async (req, res) => {
+    try {
+      const proxyRes = await fetch(`${AI_SERVICE_URL}/detect-plate`, {
+        method:  'POST',
+        headers: { 'content-type': req.headers['content-type'] },
+        body:    req,
+      });
+
+      if (!proxyRes.ok) {
+        const errText = await proxyRes.text();
+        return res.status(502).json({ error: 'AI service error', detail: errText });
+      }
+
+      const aiResult  = await proxyRes.json();
+      const plateText = aiResult.plate_text;
+
+      let vehicleMatch = null;
+      let authorized   = false;
+
+      if (plateText) {
+        vehicleMatch = db.prepare(
+          'SELECT * FROM vehicles WHERE UPPER(plate) = UPPER(?)'
+        ).get(plateText);
+        authorized = vehicleMatch?.status === 'VERIFIED';
+      }
+
+      // ── Broadcast plate event to security room ────────────────────────────
+      broadcast('ai:plate-detected', {
+        plate_text:   plateText,
+        confidence:   aiResult.plate_confidence,
+        authorized,
+        vehicle:      vehicleMatch || null,
+        inference_ms: aiResult.inference_ms,
+        timestamp:    new Date().toISOString(),
+      }, 'security_officer');
+
+      // ── Security alert for unknown plates ─────────────────────────────────
+      if (plateText && !authorized) {
+        const alertMsg = vehicleMatch
+          ? `Plate ${plateText} found but vehicle status is '${vehicleMatch.status}'.`
+          : `Unregistered plate detected: ${plateText}`;
+
+        db.prepare(
+          `INSERT INTO notifications (title, message, time, type, read, targetRole)
+           VALUES ('AI Security Alert', ?, datetime('now'), 'warning', 0, 'security_officer')`
+        ).run(alertMsg);
+
+        broadcast('ai:alert', {
+          type:       'unauthorized_plate',
+          plate_text: plateText,
+          message:    alertMsg,
+          timestamp:  new Date().toISOString(),
+        }, 'security_officer');
+      }
+
+      res.json({
+        ok:           true,
+        plate_text:   plateText,
+        authorized,
+        vehicle:      vehicleMatch || null,
+        inference_ms: aiResult.inference_ms,
+      });
+
+    } catch (err) {
+      console.error('[AI] detect-plate error:', err.message);
+      res.status(500).json({ error: 'Plate detection failed.', detail: err.message });
+    }
+  }
+);
+
 // ─── Catch-All Route for React Router ────────────────────────────────────────
 app.use((req, res) => {
   const indexFile = path.join(__dirname, '../smart_parking_react/dist', 'index.html');
@@ -780,5 +975,8 @@ server.listen(PORT, () => {
   console.log(`🔒 JWT auth with token_version liveness checks (Issues #4, #5)`);
   console.log(`⚡ Atomic reservation POST with race guard (Issue #1)`);
   console.log(`🔑 Auth endpoints: POST /api/auth/login, POST /api/auth/register`);
-  console.log(`📧 Email failures tracked in email_status (non-rollback, Issue #3)\n`);
+  console.log(`📧 Email failures tracked in email_status (non-rollback, Issue #3)`);
+  console.log(`🤖 AI Service proxy: POST /api/ai/analyze-frame, POST /api/ai/detect-plate`);
+  console.log(`   Socket.IO AI events: ai:occupancy-update, ai:plate-detected, ai:alert`);
+  console.log(`   AI Service expected at: ${AI_SERVICE_URL}\n`);
 });

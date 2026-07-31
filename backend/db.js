@@ -96,6 +96,23 @@ db.exec(`
     token_version INTEGER NOT NULL DEFAULT 0,
     createdAt TEXT DEFAULT (datetime('now'))
   );
+
+  -- AI/CV subsystem tables (idempotent — safe to add after initial schema)
+  CREATE TABLE IF NOT EXISTS ai_inference_log (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp     TEXT DEFAULT (datetime('now')),
+    camera_zone   TEXT,
+    slots_detected INTEGER DEFAULT 0,
+    occupied_count INTEGER DEFAULT 0,
+    inference_ms  REAL DEFAULT 0,
+    model_version TEXT DEFAULT 'yolov8n'
+  );
+
+  CREATE TABLE IF NOT EXISTS ai_metrics (
+    key        TEXT PRIMARY KEY,
+    value      TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
 `);
 
 // ─── Safe Column Migrations (idempotent) ─────────────────────────────────────
